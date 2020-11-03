@@ -1,5 +1,5 @@
 export interface LoginReq {
-  body?: {
+  body: {
     name: string;
     password: string;
   };
@@ -7,7 +7,7 @@ export interface LoginReq {
 
 
 export interface HelloReq {
-  body?: {
+  body: {
     name: string;
     word: string;
   };

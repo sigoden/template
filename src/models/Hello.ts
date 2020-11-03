@@ -1,32 +1,30 @@
-import { Sequelize, Model, DataTypes } from "sequelize";
+import { Sequelize, Model, DataTypes, NOW } from "sequelize";
 
 export default class Hello extends Model {
 
-  public id!: number;
-  public name!: string;
-  public word!: string;
+  public word: string;
 
   public static bootstrap(sequelize: Sequelize) {
     Hello.init(
       {
         id: {
-          type: new DataTypes.INTEGER().UNSIGNED,
+          type: DataTypes.INTEGER().UNSIGNED,
           autoIncrement: true,
-          primaryKey: true,
+          allowNull: false,
         },
         name: {
-          type: new DataTypes.STRING(128),
+          type: DataTypes.STRING(128),
           allowNull: false,
         },
         word: {
-          type: new DataTypes.TEXT(),
+          type: DataTypes.TEXT(),
           allowNull: false,
         },
       },
       {
+        sequelize,
         tableName: "Hello",
         timestamps: false,
-        sequelize,
       }
     );
   }

@@ -1,12 +1,12 @@
-import Hello from "./Hello";
 import { Sequelize } from "sequelize";
-import loadModels from "@/lib/loadModels";
+import Hello from "./Hello";
+
 
 export const Models = {
   Hello,
 };
 
-export async function load(sql: Sequelize) {
-  await loadModels(sql, Models);
+export async function load(sequelize: Sequelize) {
+  await Promise.all(Object.keys(Models).map(name => Models[name].bootstrap(sequelize)));
   return Models;
 }
