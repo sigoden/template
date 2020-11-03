@@ -1,0 +1,55 @@
+image: node:12
+
+services:
+  - docker:18.09-dind
+
+variables:
+  DOCKER_HOST: tcp://localhost:2375/
+  DOCKER_DRIVER: overlay2
+
+stages:
+  - build
+  - test
+  - deploy
+
+build:
+  stage: build
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    untracked: true
+  script:
+    - node .gitlab/setup.js
+    - npm install
+    - npm run build
+    - npm run lint
+
+test:
+  stage: test
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    untracked: true
+    policy: pull
+  before_script:
+    - .gitlab/start-server.sh 3000
+  script:
+    - HTTE_CI_MODE=true .gitlab/test.sh
+  after_script:
+    - .gitlab/on-failure.sh
+
+deploy:
+  stage: deploy
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    untracked: true
+    policy: pull
+  image: docker:stable
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build --cache-from $CI_REGISTRY_IMAGE:latest -t $CI_REGISTRY_IMAGE:latest .
+    - docker push $CI_REGISTRY_IMAGE:latest
+    - wget -O- --header "Content-Type:application/json" --post-data '{"name":"registry.jiasuyunkeji.com/backend/template2","tag":"latest"}' keel.keel:9300/v1/webhooks/native 
+  only:
+    refs:
+      - master
+    variables:
+      - $CI_PROJECT_NAMESPACE == "<group name>"

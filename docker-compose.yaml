@@ -1,0 +1,19 @@
+version: '3'
+services:
+  mysql: 
+    image: mysql:5.7 
+    environment: 
+      - MYSQL_ROOT_PASSWORD=password 
+      - LANG=C.UTF-8 
+    ports: 
+      - 3306:3306 
+    volumes: 
+      - ./tmp/docker/mysql:/var/lib/mysql 
+      - ./.docker/mysql.cnf:/etc/mysql/mysql.conf.d/custom.cnf
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+    command: redis-server --requirepass password
+    volumes:
+      - ./tmp/docker/redis:/data

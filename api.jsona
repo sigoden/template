@@ -1,0 +1,41 @@
+{
+  @openapi({
+    servers: [
+      {
+        url: "http://localhost:3000",
+      }
+    ],
+    security: [
+      { jwt: [] }
+    ]
+  })
+  login: { @endpoint({summary:"登录",security:[]})
+    route: 'POST /login',
+    req: {
+      body: {
+        name: 'admin',
+        password: 'a123456'
+      }
+    },
+    res: {
+      200: {
+        token: "<token data>"
+      }
+    }
+  },
+  hello: { @endpoint({summary:"打招呼"})
+    route: 'POST /hello',
+    req: {
+      body: {
+        name: 'Bob',
+        word: 'Good Morning',
+      }
+    },
+    res: {
+      200: {
+        msg: 'Mr Bob, Good Morning'
+      }
+    }
+  }
+
+}
