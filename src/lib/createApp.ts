@@ -18,34 +18,42 @@ import bearAuth from "@/lib/middlewares/bearAuth";
 
 import * as handlers from "@/handlers";
 
-const jsonaFile = path.resolve(__dirname, "../../api.jsona");
-
 export default async function createApp() {
   const app = new Koa();
 
   const router = new Router();
 
-  const routerError = createRoutes({
-    router,
-    jsonaFile,
-    handlers,
-    middlewares: {},
-    securityHandlers: {
-      jwt: () => bearAuth("auth", async token => {
-        return jwt.verify(token, srvs.settings.tokenSecret);
-      }),
-    },
-    handleError: validateErrors => {
-      throw srvs.errs.ErrValidation.toError({ extra: validateErrors });
-    },
-  });
+  for (let [prefix, jsonaFile] of srvs.settings.routes) {
+    jsonaFile = path.resolve(srvs.settings.rootPath, jsonaFile);
+    if (!srvs.settings.prod) {
+      serveStatic(router, path.basename(jsonaFile, ".jsona"), jsonaFile);
+    }
+    const localRouter = prefix === "/" ? router : new Router();
+    const routerError = createRoutes({
+      router: localRouter,
+      jsonaFile,
+      handlers,
+      middlewares: {},
+      securityHandlers: {
+        jwt: () => bearAuth("auth", async token => {
+          return jwt.verify(token, srvs.settings.tokenSecret);
+        }),
+      },
+      handleError: validateErrors => {
+        throw srvs.errs.ErrValidation.toError({ extra: validateErrors });
+      },
+    });
 
-  handleRouteError(routerError);
+    handleRouteError(routerError);
+    if (prefix !== "/") {
+      router.use(prefix, localRouter.routes());
+    }
+  }
+
   if (srvs.settings.prod) {
     serveHealth(router);
   } else {
     serveRunSrv(router);
-    serveStatic(router, "api", jsonaFile);
   }
 
   app.use(responseTime());
