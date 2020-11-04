@@ -870,7 +870,7 @@ debug@^3.2.6:
   dependencies:
     ms "^2.1.1"
 
-debug@^4.0.1, debug@^4.1.1:
+debug@^4.0.1, debug@^4.1.1, debug@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/debug/-/debug-4.2.0.tgz#7f150f93920e94c58f5574c2fd01a3110effe7f1"
   integrity sha512-IX2ncY78vDTjZMFUdmsvIRFY2Cf4FnD0wRs+nQwJU8Lu99/tPFdb0VybiiMTPe3I6rQmwsqQqRBvxU+bZ/I8sg==
@@ -3335,11 +3335,12 @@ use-openapi@0.3.6:
     openapi-types "^7.0.1"
     traverse "^0.6.6"
 
-use-services@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/use-services/-/use-services-0.2.0.tgz#3024fb17446bc86c3baeb36ed3c8557a8ed06dc6"
-  integrity sha512-wedjylDE+hEWf6ZhztSZZEwQZQ0RI3/Vu+wY9qiEumMFkpufN/+IiN39D+5EPEcyvQapDCb9GcRxf8YRU5lPlg==
+use-services@0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/use-services/-/use-services-0.2.2.tgz#52bba8a9ed709a63f3e986c668ba89c93d1aac08"
+  integrity sha512-Wf2gODJu2AoZyiVt9m6sbnYIePT6krY7qKaHxAyJ8Wuyi/DOAsMDwXSP243lhpmE/TalAVt87IsGhDPZpNfoYw==
   dependencies:
+    debug "^4.2.0"
     p-event "^4.2.0"
 
 util-deprecate@^1.0.1, util-deprecate@~1.0.1:
