@@ -5,7 +5,7 @@ const { parseOpenApi } = require("jsona-openapi-js");
 const { generate } = require("typegen-openapi");
 const [jsonaFile] = process.argv.slice(2);
 if (!jsonaFile) {
-  console.log(`Usage: node ./sync-apitype.js <jsona-file>`);
+  console.log("Usage: node ./sync-apitype.js <jsona-file>");
   process.exit();
 }
 

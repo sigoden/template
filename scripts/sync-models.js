@@ -6,17 +6,17 @@ const DECIMAL_AS_STRING = true;
 
 const [dbFile, outputDir] = process.argv.slice(2);
 if (!dbFile || !outputDir) {
-  console.log(`Usage: node ./update-models.js <dbfile> <output>`)
-  console.log(`  e.g. node ./scripts/update-models.js db.sql src/models`)
+  console.log("Usage: node ./update-models.js <dbfile> <output>");
+  console.log("  e.g. node ./scripts/update-models.js db.sql src/models");
   process.exit();
 }
 
 const regionMarks = {
-    beginModelAttrs: `${spaces(2)}// AutoGenModelAttrsBegin {`,
-    endModelAttrs: `${spaces(2)}// } AutoGenModelAttrsEnd`,
-    beginColumnDefs: `${spaces(8)}// AutoGenColumnDefsBegin {`,
-    endColumnDefs: `${spaces(8)}// } AutoGenColumnDefsEnd`,
-}
+  beginModelAttrs: `${spaces(2)}// AutoGenModelAttrsBegin {`,
+  endModelAttrs: `${spaces(2)}// } AutoGenModelAttrsEnd`,
+  beginColumnDefs: `${spaces(8)}// AutoGenColumnDefsBegin {`,
+  endColumnDefs: `${spaces(8)}// } AutoGenColumnDefsEnd`,
+};
 
 const content = fs.readFileSync(dbFile, "utf8");
 const parser = new Parser("mysql");
@@ -25,7 +25,7 @@ tables = tables.map(pruneTable);
 
 fs.writeFileSync(absolutePath("index.ts"), toIndex(tables), "utf8");
 tables.forEach(table => {
-  const filePath = absolutePath(`${table.name}.ts`)
+  const filePath = absolutePath(`${table.name}.ts`);
   if (fs.existsSync(absolutePath(filePath))) {
     const content = fs.readFileSync(filePath, "utf8");
     fs.writeFileSync(filePath, updateModel(table, content), "utf8");
@@ -36,15 +36,15 @@ tables.forEach(table => {
 
 
 function absolutePath(fileName) {
-  return path.resolve(outputDir, fileName)
+  return path.resolve(outputDir, fileName);
 }
 
 function toIndex(tables) {
   let importModels = "";
   let constModels = "";
   tables.map(({ name }) => {
-    importModels += `import ${name} from "./${name}";\n`
-    constModels += `  ${name},\n`
+    importModels += `import ${name} from "./${name}";\n`;
+    constModels += `  ${name},\n`;
   });
   return `import { Sequelize } from "sequelize";
 ${importModels}
@@ -56,7 +56,7 @@ export async function load(sequelize: Sequelize) {
   await Promise.all(Object.keys(Models).map(name => Models[name].bootstrap(sequelize)));
   return Models;
 }
-`
+`;
 }
 
 function updateModel(table, content) {
@@ -100,7 +100,7 @@ ${spaces(6)}},
     );
   }
 }
-`
+`;
 }
 
 function createModelAttrs(columns) {
@@ -113,7 +113,7 @@ function createModelAttrs(columns) {
       defaultValue,
     } = col;
     const nonNull = !allowNull && typeof defaultValue === "undefined" ? "!" : "";
-    modelAttrs += `  public ${colName}${nonNull}: ${valueType};\n`
+    modelAttrs += `  public ${colName}${nonNull}: ${valueType};\n`;
   });
   return modelAttrs;
 }
@@ -143,7 +143,7 @@ ${spaces(10)}type: DataTypes.${sequelizeType},\n`;
     if (defaultValue) {
       columnDefs += `${spaces(10)}defaultValue: ${defaultValue},\n`;
     }
-    columnDefs += `${spaces(8)}},\n`
+    columnDefs += `${spaces(8)}},\n`;
   });
   return columnDefs;
 }
@@ -164,7 +164,7 @@ function pruneTable(table) {
       allowNull: col.options.nullable,
       autoIncrement: !!col.options.autoincrement,
       defaultValue: !!col.options.default,
-      primaryKey: !!table.primaryKey.columns.find(v => v.column == col.name)
+      primaryKey: !!table.primaryKey.columns.find(v => v.column == col.name),
     };
   });
   return { name, columns };
@@ -172,7 +172,7 @@ function pruneTable(table) {
 
 function getType(type, unsigned) {
   if (type.datatype === "int") {
-    let suffix = unsigned ? ".UNSIGNED" : ""
+    let suffix = unsigned ? ".UNSIGNED" : "";
     let valueType = "number";
     if (type.width === 1) {
       let sequelizeType = `TINYINT()${suffix}`;
@@ -185,17 +185,17 @@ function getType(type, unsigned) {
       return { sequelizeType, valueType };
     }
   } else if (type.datatype === "decimal") {
-    let suffix = unsigned ? ".UNSIGNED" : ""
+    let suffix = unsigned ? ".UNSIGNED" : "";
     let valueType = DECIMAL_AS_STRING ? "string" : "number";
     let sequelizeType = `DECIMAL(${type.digits},${type.decimals})${suffix}`;
     return { sequelizeType, valueType };
   } else if (type.datatype === "float") {
-    let suffix = unsigned ? ".UNSIGNED" : ""
+    let suffix = unsigned ? ".UNSIGNED" : "";
     let valueType = "number";
     let sequelizeType = `FLOAT()${suffix}`;
     return { valueType, sequelizeType };
   } else if (type.datatype === "double") {
-    let suffix = unsigned ? ".UNSIGNED" : ""
+    let suffix = unsigned ? ".UNSIGNED" : "";
     let valueType = "number";
     let sequelizeType = `DOUBLE()${suffix}`;
     return { valueType, sequelizeType };
@@ -209,19 +209,19 @@ function getType(type, unsigned) {
     return { valueType, sequelizeType };
   } else if (type.datatype === "text") {
     let valueType = "string";
-    let sequelizeType = `TEXT()`;
+    let sequelizeType = "TEXT()";
     return { valueType, sequelizeType };
   } else if (type.datatype === "datetime") {
     let valueType = "Date";
-    let sequelizeType = `DATE()`;
+    let sequelizeType = "DATE()";
     return { valueType, sequelizeType };
   } else if (type.datatype === "date") {
     let valueType = "Date";
-    let sequelizeType = `DATEONLY()`;
+    let sequelizeType = "DATEONLY()";
     return { valueType, sequelizeType };
   } else if (type.datatype === "timestamp") {
     let valueType = "Date";
-    let sequelizeType = `DATE()`;
+    let sequelizeType = "DATE()";
     return { valueType, sequelizeType };
   }
 }

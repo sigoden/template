@@ -41,7 +41,7 @@
     {
       "files": "scripts/*.js",
       "rules": {
-        "@typescript-eslint/*": "off" 
+        "@typescript-eslint/no-var-requires": 0
       }
     }
   ]
