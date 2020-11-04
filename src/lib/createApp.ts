@@ -21,6 +21,8 @@ import * as handlers from "@/handlers";
 export default async function createApp() {
   const app = new Koa();
 
+  app.proxy = true;
+  
   const router = new Router();
 
   for (const [prefix, jsonaFile, authKey] of srvs.settings.routes) {
