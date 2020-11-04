@@ -46,7 +46,7 @@ function toIndex(tables) {
   let bootModels = "";
   tables.map(({ name }) => {
     importModels += `import ${name} from "./${name}";
-export { ${name} };`;
+export { ${name} };\n`;
     bootModels += `  ${name}.bootstrap(sequelize);\n`;
   });
   return `import { Sequelize } from "sequelize";
