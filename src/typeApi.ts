@@ -5,12 +5,10 @@ export interface LoginReq {
   };
 }
 
-
 export interface HelloReq {
   body: {
     name: string;
     word: string;
   };
 }
-
 

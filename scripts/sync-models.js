@@ -2,6 +2,8 @@ const fs = require("fs");
 const path = require("path");
 const { Parser } = require("sql-ddl-to-json-schema");
 
+const DECIMAL_AS_STRING = true;
+
 const [dbFile, outputDir] = process.argv.slice(2);
 if (!dbFile || !outputDir) {
   console.log(`Usage: node ./update-models.js <dbfile> <output>`)
@@ -9,18 +11,32 @@ if (!dbFile || !outputDir) {
   process.exit();
 }
 
+const regionMarks = {
+    beginModelAttrs: `${spaces(2)}// AutoGenModelAttrsBegin {`,
+    endModelAttrs: `${spaces(2)}// } AutoGenModelAttrsEnd`,
+    beginColumnDefs: `${spaces(8)}// AutoGenColumnDefsBegin {`,
+    endColumnDefs: `${spaces(8)}// } AutoGenColumnDefsEnd`,
+}
+
 const content = fs.readFileSync(dbFile, "utf8");
 const parser = new Parser("mysql");
 let tables = parser.feed(content).toCompactJson();
 tables = tables.map(pruneTable);
-writeToFile("index.ts", toIndex(tables));
+
+fs.writeFileSync(absolutePath("index.ts"), toIndex(tables), "utf8");
 tables.forEach(table => {
-  writeToFile(`${table.name}.ts`, toModel(table));
+  const filePath = absolutePath(`${table.name}.ts`)
+  if (fs.existsSync(absolutePath(filePath))) {
+    const content = fs.readFileSync(filePath, "utf8");
+    fs.writeFileSync(filePath, updateModel(table, content), "utf8");
+  } else {
+    fs.writeFileSync(filePath, toModel(table), "utf8");
+  }
 });
 
 
-function writeToFile(fileName, content) {
-  fs.writeFileSync(path.resolve(outputDir, fileName), content, "utf8");
+function absolutePath(fileName) {
+  return path.resolve(outputDir, fileName)
 }
 
 function toIndex(tables) {
@@ -43,48 +59,39 @@ export async function load(sequelize: Sequelize) {
 `
 }
 
+function updateModel(table, content) {
+  const beginModelAttrs = content.indexOf(regionMarks.beginModelAttrs);
+  const endModelAttrs = content.indexOf(regionMarks.endModelAttrs);
+  if (beginModelAttrs > -1 && endModelAttrs > -1) {
+    content = content.slice(0, beginModelAttrs)
+      + regionMarks.beginModelAttrs + "\n"
+      + createModelAttrs(table.columns) + content.slice(endModelAttrs);
+  }
+  const beginColumnDefs = content.indexOf(regionMarks.beginColumnDefs);
+  const endColumnDefs = content.indexOf(regionMarks.endColumnDefs);
+  if (beginColumnDefs > -1 && endColumnDefs > -1) {
+    content = content.slice(0, beginColumnDefs)
+      + regionMarks.beginColumnDefs + "\n"
+      + createColumnDefs(table.columns) + content.slice(endColumnDefs);
+  }
+  return content;
+}
+
 function toModel(table) {
   const { name, columns } = table;
-  let modelAttr = "";
-  let columnDefs = "";
-  columns.forEach(col => {
-    const {
-      colName,
-      sequelizeType,
-      valueType,
-      allowNull,
-      autoIncrement,
-      defaultValue,
-      primaryKey,
-    } = col;
-    const nonNull = !allowNull && typeof defaultValue === "undefined" ? "!" : "";
-    modelAttr = `  public ${colName}${nonNull}: ${valueType};\n`
-    columnDefs += `${spaces(8)}${colName}: {
-${spaces(10)}type: DataTypes.${sequelizeType},\n`;
-    if (autoIncrement) {
-      columnDefs += `${spaces(10)}autoIncrement: true,\n`;
-    }
-    if (primaryKey) {
-      columnDefs += `${spaces(10)}primaryKey: false,\n`;
-    }
-    if (!primaryKey && !allowNull) {
-      columnDefs += `${spaces(10)}allowNull: false,\n`;
-    }
-    if (defaultValue) {
-      columnDefs += `${spaces(10)}defaultValue: ${defaultValue},\n`;
-    }
-    columnDefs += `${spaces(8)}},\n`
-  });
-
   return `import { Sequelize, Model, DataTypes, NOW } from "sequelize";
 
 export default class ${name} extends Model {
 
-${modelAttr}
+${regionMarks.beginModelAttrs}
+${createModelAttrs(columns)}${regionMarks.endModelAttrs}
+
   public static bootstrap(sequelize: Sequelize) {
     ${name}.init(
       {
-${columnDefs}${spaces(6)}},
+${regionMarks.beginColumnDefs}
+${createColumnDefs(columns)}${regionMarks.endColumnDefs}
+${spaces(6)}},
       {
         sequelize,
         tableName: "${name}",
@@ -96,11 +103,57 @@ ${columnDefs}${spaces(6)}},
 `
 }
 
+function createModelAttrs(columns) {
+  let modelAttrs = "";
+  columns.forEach(col => {
+    const {
+      colName,
+      valueType,
+      allowNull,
+      defaultValue,
+    } = col;
+    const nonNull = !allowNull && typeof defaultValue === "undefined" ? "!" : "";
+    modelAttrs += `  public ${colName}${nonNull}: ${valueType};\n`
+  });
+  return modelAttrs;
+}
+
+function createColumnDefs(columns) {
+  let columnDefs = "";
+  columns.forEach(col => {
+    const {
+      colName,
+      sequelizeType,
+      allowNull,
+      autoIncrement,
+      defaultValue,
+      primaryKey,
+    } = col;
+    columnDefs += `${spaces(8)}${colName}: {
+${spaces(10)}type: DataTypes.${sequelizeType},\n`;
+    if (autoIncrement) {
+      columnDefs += `${spaces(10)}autoIncrement: true,\n`;
+    }
+    if (primaryKey) {
+      columnDefs += `${spaces(10)}primaryKey: true,\n`;
+    }
+    if (!primaryKey && !allowNull) {
+      columnDefs += `${spaces(10)}allowNull: false,\n`;
+    }
+    if (defaultValue) {
+      columnDefs += `${spaces(10)}defaultValue: ${defaultValue},\n`;
+    }
+    columnDefs += `${spaces(8)}},\n`
+  });
+  return columnDefs;
+}
+
 function spaces(n) {
   return " ".repeat(n);
 }
 
 function pruneTable(table) {
+  debugger;
   const name = table.name;
   const columns = table.columns.map(col => {
     const { sequelizeType, valueType } = getType(col.type, col.options.unsigned);
@@ -111,7 +164,7 @@ function pruneTable(table) {
       allowNull: col.options.nullable,
       autoIncrement: !!col.options.autoincrement,
       defaultValue: !!col.options.default,
-      primaryKey: !!table.primaryKey.columns.find(v => v.column == name)
+      primaryKey: !!table.primaryKey.columns.find(v => v.column == col.name)
     };
   });
   return { name, columns };
@@ -133,7 +186,7 @@ function getType(type, unsigned) {
     }
   } else if (type.datatype === "decimal") {
     let suffix = unsigned ? ".UNSIGNED" : ""
-    let valueType = "number";
+    let valueType = DECIMAL_AS_STRING ? "string" : "number";
     let sequelizeType = `DECIMAL(${type.digits},${type.decimals})${suffix}`;
     return { sequelizeType, valueType };
   } else if (type.datatype === "float") {

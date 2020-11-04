@@ -9,8 +9,8 @@
     "lint": "npx eslint --ext .ts src",
     "build": "tsc",
     "clean": "rimraf dist",
-    "sync:models": "node ./scripts/update-models.js db.sql src/models",
-    "sync:openapi": "node ./scripts/typegen-openapi.js api.jsona",
+    "sync:models": "node ./scripts/sync-models.js db.sql src/models",
+    "sync:apitype": "node ./scripts/sync-apitype.js api.jsona",
     "test": "npm run htte",
     "htte": "htte htte/_config.yaml"
   },
@@ -39,7 +39,7 @@
     "p-event": "^4.2.0",
     "sequelize": "6",
     "stoppable": "^1.1.0",
-    "use-openapi": "^0.3.3",
+    "use-openapi": "0.3.6",
     "use-services": "^0.2.0",
     "winston": "^3.3.3"
   },
@@ -49,6 +49,7 @@
     "@types/koa-router": "^7.4.1",
     "@typescript-eslint/eslint-plugin": "^4.6.1",
     "@typescript-eslint/parser": "^4.6.1",
+    "change-case": "^4.1.1",
     "eslint": "^7.12.1",
     "htte-cli": "^0.6.1",
     "htte-plugin-builtin": "^0.6.1",
@@ -57,7 +58,7 @@
     "rimraf": "^3.0.2",
     "sql-ddl-to-json-schema": "^4.0.4",
     "ts-node": "^9.0.0",
-    "typegen-openapi": "^0.1.6",
+    "typegen-openapi": "0.1.8",
     "typescript": "^4.0.5"
   },
   "nodemonConfig": {

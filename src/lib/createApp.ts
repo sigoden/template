@@ -31,11 +31,9 @@ export default async function createApp() {
     handlers,
     middlewares: {},
     securityHandlers: {
-      jwt: () => {
-        bearAuth("auth", async token => {
-          return jwt.verify(token, srvs.settings.tokenSecret);
-        });
-      },
+      jwt: () => bearAuth("auth", async token => {
+        return jwt.verify(token, srvs.settings.tokenSecret);
+      }),
     },
     handleError: validateErrors => {
       throw srvs.errs.ErrValidation.toError({ extra: validateErrors });

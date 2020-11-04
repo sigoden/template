@@ -3206,10 +3206,10 @@ typedarray-to-buffer@^3.1.5:
   dependencies:
     is-typedarray "^1.0.0"
 
-typegen-openapi@^0.1.6:
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/typegen-openapi/-/typegen-openapi-0.1.6.tgz#f7577708a1ca4256d43b5d0d00e55c517cb5dc40"
-  integrity sha512-FSomRNl6jFmeAGBJ4BYC98dWIpBQZkDbUzxBwKh5Dr+/3/VMJHV10kSbn47S315L9PuhSeBCTQICAbFUlRBb2A==
+typegen-openapi@0.1.8:
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/typegen-openapi/-/typegen-openapi-0.1.8.tgz#39cda135af3fd0b565bb5817affb5d0f39c1ba62"
+  integrity sha512-pd6lgt/beFiqnFG4DrNmY1WtC22LvNM7vy/hHjQxYmr6QZyueutqp82qHDCiTEswXo3r/AzBWB9Zg6i77gQx5g==
   dependencies:
     change-case "^4.1.1"
     lodash.get "^4.4.2"
@@ -3321,14 +3321,15 @@ url-parse-lax@^3.0.0:
   dependencies:
     prepend-http "^2.0.0"
 
-use-openapi@^0.3.3:
-  version "0.3.3"
-  resolved "https://registry.yarnpkg.com/use-openapi/-/use-openapi-0.3.3.tgz#a3f8638ca31782b0d692bce589c825ae6816bb61"
-  integrity sha512-oSGTu2MxbvtYSDTtfezJqLSWJ1c8cmIn0UMOyuG/uWYlnGmLjmHPecapp07MUtUyZI5pSheF9e6adJ21M7MIxQ==
+use-openapi@0.3.6:
+  version "0.3.6"
+  resolved "https://registry.yarnpkg.com/use-openapi/-/use-openapi-0.3.6.tgz#7d45957bf56b0e874b6c5064b118c2f0292e01de"
+  integrity sha512-cGSw0GQaUc6yBpnKzRbUOvpKdcEJppDwqZgK+2p4mIVEQ36mo1DeOkU2SnZ60YmZjsqhME21dmxfBu7o9dNt4w==
   dependencies:
     ajv "^6.12.6"
     dag-map "^2.0.2"
     decimal.js "^10.2.1"
+    jsona-openapi-js "^0.1.12"
     lodash.get "^4.4.2"
     lodash.merge "^4.6.2"
     openapi-types "^7.0.1"
