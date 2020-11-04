@@ -23,7 +23,7 @@ export default async function createApp() {
 
   const router = new Router();
 
-  for (const [prefix, jsonaFile] of srvs.settings.routes) {
+  for (const [prefix, jsonaFile, authKey] of srvs.settings.routes) {
     const jsonaFilePath = path.resolve(srvs.settings.rootPath, jsonaFile);
     if (!srvs.settings.prod) {
       serveStatic(router, path.basename(jsonaFilePath, ".jsona"), jsonaFilePath);
@@ -35,7 +35,7 @@ export default async function createApp() {
       handlers,
       middlewares: {},
       securityHandlers: {
-        jwt: () => bearAuth("auth", async token => {
+        jwt: () => bearAuth(authKey, async token => {
           return jwt.verify(token, srvs.settings.tokenSecret);
         }),
       },

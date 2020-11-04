@@ -5,7 +5,7 @@ const settings = {
   port: 3000,
   prod: false,
   routes: [
-    ["/", "api.jsona"],
+    ["/", "api.jsona", "auth"],
   ],
   rootPath: path.resolve(__dirname, "../"),
   prefix: "Mr ",
