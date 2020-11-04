@@ -21,7 +21,7 @@ const operationIds = getOperationIds(openapi);
 const api = path.basename(jsonaFile, ".jsona");
 const missOperationIds = _.difference(operationIds, _.keys(handlers));
 let todoContent = `import { Handler, ${api} } from "@/type";\n\n`;
-todoContent += missOperationIds.map(id => toOperation(api, id)).join("");
+todoContent += missOperationIds.map(id => toOperation(id)).join("");
 
 fs.writeFileSync(path.join(__dirname, "../src", handlersName, "__todo__.ts"), todoContent, "utf8");
 
