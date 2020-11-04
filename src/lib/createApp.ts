@@ -133,7 +133,7 @@ function serveRunSrv(router: Router) {
     const parent = getParent(path);
     const fn = _.get(srvs, path);
     if (!fn) {
-      throw new Error(`srvs${path} miss`);
+      throw new Error(`srvs.${path} miss`);
     }
     const retValue = await fn.apply(_.get(srvs, parent), args);
     if (ret) {

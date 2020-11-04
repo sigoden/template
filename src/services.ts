@@ -11,6 +11,9 @@ import * as Echo from "@/lib/services/echo";
 import * as errcodes from "@/errcodes";
 import { Models, load } from "@/models";
 import * as settings from "@/settings";
+import * as Mock from "@/business/mock";
+import Redis from "@/business/redis";
+
 const emitter = new EventEmitter();
 
 const options = {
@@ -28,7 +31,7 @@ const options = {
       host: "0.0.0.0",
       password: "password",
     },
-  } as IORedis.Option<IORedis.Service>,
+  } as IORedis.Option<Redis>,
   sql: {
     init: Sequelize.init,
     args: {
@@ -58,6 +61,10 @@ const options = {
     init: Echo.init,
     args: emitter,
   } as Echo.Option<EventEmitter>,
+  mock: {
+    init: Mock.init,
+    args: {},
+  } as Mock.Option,
 };
 
 
