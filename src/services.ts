@@ -19,7 +19,7 @@ const options = {
     args: {
       console: {
         level: "debug",
-      }
+      },
     },
   } as Winston.Option<Winston.Service>,
   redis: {

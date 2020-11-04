@@ -23,15 +23,15 @@ export default async function createApp() {
 
   const router = new Router();
 
-  for (let [prefix, jsonaFile] of srvs.settings.routes) {
-    jsonaFile = path.resolve(srvs.settings.rootPath, jsonaFile);
+  for (const [prefix, jsonaFile] of srvs.settings.routes) {
+    const jsonaFilePath = path.resolve(srvs.settings.rootPath, jsonaFile);
     if (!srvs.settings.prod) {
-      serveStatic(router, path.basename(jsonaFile, ".jsona"), jsonaFile);
+      serveStatic(router, path.basename(jsonaFilePath, ".jsona"), jsonaFilePath);
     }
     const localRouter = prefix === "/" ? router : new Router();
     const routerError = createRoutes({
       router: localRouter,
-      jsonaFile,
+      jsonaFile: jsonaFilePath,
       handlers,
       middlewares: {},
       securityHandlers: {
