@@ -11,7 +11,9 @@
     "clean": "rimraf dist",
     "sync:models": "node ./scripts/sync-models.js db.sql src/models",
     "sync:apitype": "node ./scripts/sync-apitype.js api.jsona",
+    "sync:apitype:manage": "node ./scripts/sync-apitype.js apiManage.jsona",
     "sync:handlers": "node ./scripts/sync-handlers.js api.jsona handlers",
+    "sync:handlers:manage": "node ./scripts/sync-handlers.js apiManage.jsona handlersManage",
     "test": "npm run htte",
     "htte": "htte htte/_config.yaml"
   },
