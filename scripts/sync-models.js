@@ -12,6 +12,8 @@ if (!dbFile || !outputDir) {
 }
 
 const regionMarks = {
+  beginInterfaceAttrs: `${spaces(2)}// AutoGenIntefaceAttrBegin {`,
+  endInterfaceAttrs: `${spaces(2)}// } AutoGenIntefaceAttrEnd`,
   beginModelAttrs: `${spaces(2)}// AutoGenModelAttrsBegin {`,
   endModelAttrs: `${spaces(2)}// } AutoGenModelAttrsEnd`,
   beginColumnDefs: `${spaces(8)}// AutoGenColumnDefsBegin {`,
@@ -60,6 +62,13 @@ export async function load(sequelize: Sequelize) {
 }
 
 function updateModel(table, content) {
+  const beginInterfaceAttrs = content.indexOf(regionMarks.beginInterfaceAttrs);
+  const endInterfaceAttrs = content.indexOf(regionMarks.endInterfaceAttrs);
+  if (beginInterfaceAttrs > -1 && endInterfaceAttrs > -1) {
+    content = content.slice(0, beginInterfaceAttrs)
+      + regionMarks.beginInterfaceAttrs + "\n"
+      + createInterfaceAttrs(table.columns) + content.slice(endInterfaceAttrs);
+  }
   const beginModelAttrs = content.indexOf(regionMarks.beginModelAttrs);
   const endModelAttrs = content.indexOf(regionMarks.endModelAttrs);
   if (beginModelAttrs > -1 && endModelAttrs > -1) {
@@ -81,7 +90,11 @@ function toModel(table) {
   const { name, columns } = table;
   return `import { Sequelize, Model, DataTypes, NOW } from "sequelize";
 
-export default class ${name} extends Model {
+interface ${name}Attributes {
+${regionMarks.beginInterfaceAttrs}
+${createInterfaceAttrs(columns)}${regionMarks.endInterfaceAttrs}\n}
+
+export default class ${name} extends Model<${name}Attributes, Partial<${name}Attributes>> {
 
 ${regionMarks.beginModelAttrs}
 ${createModelAttrs(columns)}${regionMarks.endModelAttrs}
@@ -101,6 +114,21 @@ ${spaces(6)}},
   }
 }
 `;
+}
+
+function createInterfaceAttrs(columns) {
+  let interfaceAttrs = "";
+  columns.forEach(col => {
+    const {
+      colName,
+      valueType,
+      allowNull,
+      defaultValue,
+    } = col;
+    const optional = !allowNull && typeof defaultValue === "undefined" ? "" : "?";
+    interfaceAttrs += `  ${colName}${optional}: ${valueType};\n`;
+  });
+  return interfaceAttrs;
 }
 
 function createModelAttrs(columns) {
@@ -163,7 +191,7 @@ function pruneTable(table) {
       valueType,
       allowNull: col.options.nullable,
       autoIncrement: !!col.options.autoincrement,
-      defaultValue: !!col.options.default,
+      defaultValue: col.options.default ? !!col.options.default : undefined,
       primaryKey: !!table.primaryKey.columns.find(v => v.column == col.name),
     };
   });
