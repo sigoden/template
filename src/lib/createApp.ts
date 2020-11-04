@@ -50,11 +50,10 @@ export default async function createApp() {
     }
   }
 
-  if (srvs.settings.prod) {
-    serveHealth(router);
-  } else {
+  serveHealth(router);
+  if (!srvs.settings.prod) {
     serveRunSrv(router);
-  }
+  } 
 
   app.use(responseTime());
   app.use(helmet());
@@ -84,7 +83,7 @@ export default async function createApp() {
 
 function serveStatic(router: Router, routePath: string, filePath: string) {
   const cache = {};
-  router.get("/_/static" + routePath, async ctx => {
+  router.get("/_/static/" + routePath, async ctx => {
     ctx.set("content-type", "text/plain; charset=utf-8");
     if (cache[routePath]) {
       ctx.body = cache[routePath];
