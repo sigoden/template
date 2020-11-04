@@ -1,74 +1,58 @@
 import * as path from "path";
 import * as _ from "lodash";
-import * as fs from "fs";
-import { promisify } from "util";
 import * as Koa from "koa";
 import * as bodyParser from "koa-bodyparser";
 import * as responseTime from "koa-response-time";
 import * as helmet from "koa-helmet";
-import * as jwt from "jsonwebtoken";
 import * as Router from "koa-router";
-import * as cors from "kcors";
 
 import srvs from "@/services";
 import createRoutes from "@/lib/createRoutes";
 
 import error from "@/lib/middlewares/error";
-import bearAuth from "@/lib/middlewares/bearAuth";
 
-import * as handlers from "@/handlers";
+export interface CreateAppOptions {
+  beforeRoute: (app: Koa) => void;
+  routes: {
+    subpath: string,
+    jsonaFile: string,
+    handlers: any,
+    middlewares: {[k: string]: Koa.Middleware},
+    securityHandlers: {[k: string]: (config: string[]) => Koa.Middleware},
+  }[];
+}
 
-export default async function createApp() {
+export default function createApp(options: CreateAppOptions) {
   const app = new Koa();
 
   app.proxy = true;
   
   const router = new Router();
 
-  for (const [prefix, jsonaFile, authKey] of srvs.settings.routes) {
+  for (const item of options.routes) {
+    const { subpath, jsonaFile, handlers, middlewares, securityHandlers } = item;
     const jsonaFilePath = path.resolve(srvs.settings.rootPath, jsonaFile);
-    if (!srvs.settings.prod) {
-      serveStatic(router, path.basename(jsonaFilePath, ".jsona"), jsonaFilePath);
-    }
-    const localRouter = prefix === "/" ? router : new Router();
+    const localRouter = subpath === "/" ? router : new Router();
     const routerError = createRoutes({
+      prod: srvs.settings.prod,
       router: localRouter,
       jsonaFile: jsonaFilePath,
       handlers,
-      middlewares: {},
-      securityHandlers: {
-        jwt: () => bearAuth(authKey, async token => {
-          return jwt.verify(token, srvs.settings.tokenSecret);
-        }),
-      },
+      middlewares,
+      securityHandlers,
       handleError: validateErrors => {
         throw srvs.errs.ErrValidation.toError({ extra: validateErrors });
       },
     });
 
     handleRouteError(routerError);
-    if (prefix !== "/") {
-      router.use(prefix, localRouter.routes());
+    if (subpath !== "/") {
+      router.use(subpath, localRouter.routes());
     }
   }
 
-  serveHealth(router);
-  if (!srvs.settings.prod) {
-    serveRunSrv(router);
-  } 
-
   app.use(responseTime());
   app.use(helmet());
-  app.use(
-    cors({
-      origin: "*",
-      exposeHeaders: ["Authorization"],
-      credentials: true,
-      allowMethods: ["GET", "PUT", "POST", "DELETE"],
-      allowHeaders: ["Authorization", "Content-Type"],
-      keepHeadersOnError: true,
-    }),
-  );
 
   app.use(error());
   app.use(
@@ -76,74 +60,12 @@ export default async function createApp() {
       enableTypes: ["json"],
     }),
   );
+  options.beforeRoute(app);
 
   app.use(router.routes());
   app.use(router.allowedMethods());
 
   return app;
-}
-
-function serveStatic(router: Router, routePath: string, filePath: string) {
-  const cache = {};
-  router.get("/_/static/" + routePath, async ctx => {
-    ctx.set("content-type", "text/plain; charset=utf-8");
-    if (cache[routePath]) {
-      ctx.body = cache[routePath];
-      return;
-    }
-    try {
-      const data = await promisify(fs.readFile)(filePath, "utf8");
-      cache[routePath] = data;
-      ctx.body = data;
-    } catch (err) {
-      ctx.status = 500;
-      ctx.body = err.message;
-    }
-  });
-}
-
-function serveHealth(router: Router) {
-  router.get("/_/health", async ctx => {
-    try {
-      if (srvs.sql) {
-        await srvs.sql.query("SELECT 1");
-      }
-      if (srvs.redis) {
-        await srvs.redis.get("key");
-      }
-      ctx.body = "OK";
-    } catch (err) {
-      ctx.status = 500;
-      ctx.body = err.message;
-    }
-  });
-}
-
-function serveRunSrv(router: Router) {
-  const getParent = path => {
-    const dot = path.lastIndexOf(".");
-    const bracket = path.lastIndexOf("]");
-    const post = Math.max(dot, bracket);
-    if (post > -1) {
-      return path.slice(0, dot);
-    }
-    return path;
-  };
-
-  router.post("/_/srvs", async ctx => {
-    const { path, args, ret = true } = ctx.request.body;
-    const parent = getParent(path);
-    const fn = _.get(srvs, path);
-    if (!fn) {
-      throw new Error(`srvs.${path} miss`);
-    }
-    const retValue = await fn.apply(_.get(srvs, parent), args);
-    if (ret) {
-      ctx.body = retValue;
-    } else {
-      ctx.body = "";
-    }
-  });
 }
 
 function handleRouteError(routerError) {

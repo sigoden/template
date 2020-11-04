@@ -1,11 +1,11 @@
 import * as http from "http";
 import * as stoppable from "stoppable";
 import * as pEvent from "p-event";
+import * as Koa from "koa";
 import { promisify } from "util";
 import { AppSevices, init } from "@/services";
-import createApp from "@/lib/createApp";
 
-export default async function runServer() {
+export default async function runServer(createApp: (srvs: AppSevices) => Koa) {
   let server;
   const srvs: AppSevices = {} as any;
   let stop;
@@ -13,7 +13,7 @@ export default async function runServer() {
     stop = await init(srvs);
     const { settings } = srvs;
     const { host, port } = settings;
-    const app = await createApp();
+    const app = createApp(srvs);
     server = stoppable(http.createServer(app.callback()), 7000);
     server.listen(port, host);
     server.stop = promisify(server.stop);

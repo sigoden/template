@@ -1,5 +1,6 @@
 import * as Koa from "koa";
 import * as api from "@/typeApi";
+import * as apiInner from "@/typeApiInner";
 
 export type Handler<T> = (req: T, ctx: Koa.ParameterizedContext<KoaContextState>) => Promise<any>;
 export interface KoaContextState extends Koa.DefaultState {
@@ -8,4 +9,4 @@ export interface KoaContextState extends Koa.DefaultState {
   }
 }
 
-export { api };
+export { api, apiInner };

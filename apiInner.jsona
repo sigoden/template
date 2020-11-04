@@ -1,0 +1,26 @@
+{
+  @openapi
+  health: { @endpoint({summary:"健康检查"})
+    route: "GET /health",
+  },
+  runSrvs: { @endpoint({summary:"模拟接口","x-debugonly":true})
+    route: "POST /srvs",
+    req: {
+      body: {
+        path: "mock.delay",
+        args: [
+            2,
+        ],
+        ret: false, @description("是否返回数据，默认true")
+      }
+    }
+  },
+  staticFile: { @endpoint({summary:"静态文件","x-debugonly":true})
+    route: "POST /static/{}",
+    req: {
+      params: {
+        name: "",  @description("jsona文件名") @schema({enum:["api"]})
+      }
+    }
+  }
+}

@@ -9,7 +9,7 @@ const { parseOpenApi } = require("jsona-openapi-js");
 const METHODS = ["get", "put", "delete", "post", "options"];
 
 const [jsonaFile, handlersName] = process.argv.slice(2);
-if (!jsonaFile) {
+if (!jsonaFile || !handlersName) {
   console.log("Usage: node ./sync-apitype.js <jsona-file> <handlers-name>");
   process.exit();
 }

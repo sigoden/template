@@ -4,6 +4,7 @@ import { parseOpenApi } from "jsona-openapi-js";
 
 
 export default function createRoutes({
+  prod,
   router,
   jsonaFile,
   handlers,
@@ -51,6 +52,7 @@ export default function createRoutes({
     }
 
     if (!passAllCheck) continue;
+    if (prod && xProps["x-debugonly"]) continue;
 
     router[operation.method](operation.path, ...apiMiddlrewares, (ctx) => {
       const { request, params, headers, query } = ctx;
