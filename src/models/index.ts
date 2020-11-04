@@ -1,12 +1,8 @@
 import { Sequelize } from "sequelize";
+
 import Hello from "./Hello";
+export { Hello };
 
-
-export const Models = {
-  Hello,
-};
-
-export async function load(sequelize: Sequelize) {
-  await Promise.all(Object.keys(Models).map(name => Models[name].bootstrap(sequelize)));
-  return Models;
+export function load(sequelize: Sequelize) {
+  Hello.bootstrap(sequelize);
 }

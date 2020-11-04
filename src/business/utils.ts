@@ -1,6 +1,5 @@
 import { FindOptions } from "sequelize";
 
-import { Models } from "@/models";
 import srvs from "@/services";
 import queryQ from "@/lib/queryQ";
 
@@ -62,7 +61,7 @@ export function withQ(findOpts: FindOptions, query: { q?: string }): FindOptions
 
 /**
  * ``` 
- * const userIter = tableIter<User>("User", 10, instance => (
+ * const userIter = tableIter<User>(User, 10, instance => (
  *   { where: { id: {[Op.gt]: instance ? instance.id : 0 }}, order: [["id", "asc"]] }
  * ));
  * for await (const users of userIter) {
@@ -72,7 +71,7 @@ export function withQ(findOpts: FindOptions, query: { q?: string }): FindOptions
  * }
  * ```
  */
-export function tableIter<T>(name: keyof typeof Models, limit: number, getFindOptsFn: (instance: T) => FindOptions) {
+export function tableIter<T>(ModelClass: any, limit: number, getFindOptsFn: (instance: T) => FindOptions) {
   let instance = null;
   let done = false;
   return {
@@ -82,8 +81,7 @@ export function tableIter<T>(name: keyof typeof Models, limit: number, getFindOp
           if (done) return { done: true };
           const where = getFindOptsFn(instance);
           where.limit = limit;
-          const Model = Models[name] as any;
-          const instances = await Model.findAll(where);
+          const instances = await ModelClass.findAll(where);
           instance = instances[instances.length - 1];
           if (!instance) {
             return { done: true };

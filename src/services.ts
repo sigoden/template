@@ -9,7 +9,7 @@ import * as HttpErr from "@/lib/services/httperr";
 import * as Echo from "@/lib/services/echo";
 
 import * as errcodes from "@/errcodes";
-import { Models, load } from "@/models";
+import { load } from "@/models";
 import * as settings from "@/settings";
 import * as Mock from "@/business/mock";
 import Redis from "@/business/redis";
@@ -48,7 +48,7 @@ const options = {
       },
       load,
     },
-  } as Sequelize.Option<typeof Models, Sequelize.Service>,
+  } as Sequelize.Option<Sequelize.Service>,
   errs: {
     init: HttpErr.init,
     args: errcodes,

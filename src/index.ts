@@ -26,7 +26,7 @@ runServer(srvs => {
     },
     routes: [
       {
-        subpath: "/",
+        prefix: "/",
         jsonaFile: "api.jsona",
         handlers,
         middlewares: {},
@@ -37,7 +37,7 @@ runServer(srvs => {
         },
       },
       {
-        subpath: "/_/",
+        prefix: "/_/",
         jsonaFile: "apiInner.jsona",
         handlers: handlersInner,
         middlewares: {},

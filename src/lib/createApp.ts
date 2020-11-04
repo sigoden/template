@@ -14,7 +14,7 @@ import error from "@/lib/middlewares/error";
 export interface CreateAppOptions {
   beforeRoute: (app: Koa) => void;
   routes: {
-    subpath: string,
+    prefix: string,
     jsonaFile: string,
     handlers: any,
     middlewares: {[k: string]: Koa.Middleware},
@@ -27,30 +27,6 @@ export default function createApp(options: CreateAppOptions) {
 
   app.proxy = true;
   
-  const router = new Router();
-
-  for (const item of options.routes) {
-    const { subpath, jsonaFile, handlers, middlewares, securityHandlers } = item;
-    const jsonaFilePath = path.resolve(srvs.settings.rootPath, jsonaFile);
-    const localRouter = subpath === "/" ? router : new Router();
-    const routerError = createRoutes({
-      prod: srvs.settings.prod,
-      router: localRouter,
-      jsonaFile: jsonaFilePath,
-      handlers,
-      middlewares,
-      securityHandlers,
-      handleError: validateErrors => {
-        throw srvs.errs.ErrValidation.toError({ extra: validateErrors });
-      },
-    });
-
-    handleRouteError(routerError);
-    if (subpath !== "/") {
-      router.use(subpath, localRouter.routes());
-    }
-  }
-
   app.use(responseTime());
   app.use(helmet());
 
@@ -62,6 +38,25 @@ export default function createApp(options: CreateAppOptions) {
   );
   options.beforeRoute(app);
 
+  const router = new Router();
+  for (const item of options.routes) {
+    const { prefix, jsonaFile, handlers, middlewares, securityHandlers } = item;
+    const jsonaFilePath = path.resolve(srvs.settings.rootPath, jsonaFile);
+    const routerError = createRoutes({
+      prod: srvs.settings.prod,
+      prefix,
+      router,
+      jsonaFile: jsonaFilePath,
+      handlers,
+      middlewares,
+      securityHandlers,
+      handleError: validateErrors => {
+        throw srvs.errs.ErrValidation.toError({ extra: validateErrors });
+      },
+    });
+
+    handleRouteError(routerError);
+  }
   app.use(router.routes());
   app.use(router.allowedMethods());
 

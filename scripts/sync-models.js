@@ -43,21 +43,18 @@ function absolutePath(fileName) {
 
 function toIndex(tables) {
   let importModels = "";
-  let constModels = "";
+  let bootModels = "";
   tables.map(({ name }) => {
-    importModels += `import ${name} from "./${name}";\n`;
-    constModels += `  ${name},\n`;
+    importModels += `import ${name} from "./${name}";
+export { ${name} };`;
+    bootModels += `  ${name}.bootstrap(sequelize);\n`;
   });
   return `import { Sequelize } from "sequelize";
+
 ${importModels}
 
-export const Models = {
-${constModels}};
-
-export async function load(sequelize: Sequelize) {
-  await Promise.all(Object.keys(Models).map(name => Models[name].bootstrap(sequelize)));
-  return Models;
-}
+export function load(sequelize: Sequelize) {
+${bootModels}}
 `;
 }
 

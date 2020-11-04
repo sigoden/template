@@ -4,7 +4,7 @@ export interface HealthReq {
 export interface RunSrvsReq {
   body: {
     path: string;
-    args: number[];
+    args: any[];
     ret: boolean;
   };
 }

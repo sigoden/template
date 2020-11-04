@@ -9,9 +9,8 @@
       body: {
         path: "mock.delay",
         args: [
-            2,
         ],
-        ret: false, @description("是否返回数据，默认true")
+        ret: false, @description("是否返回数据") @optional
       }
     }
   },

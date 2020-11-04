@@ -9,7 +9,9 @@ export default function error() {
     try {
       await next();
       if (!ctx.response.body) {
-        throw errs.ErrNotFound.toError();
+        ctx.status = 404;
+        ctx.body = errs.ErrNotFound.toJson();
+        return;
       }
     } catch (err) {
       if (err instanceof HttpError) {
