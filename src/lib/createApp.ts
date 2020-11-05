@@ -7,19 +7,16 @@ import * as helmet from "koa-helmet";
 import * as Router from "koa-router";
 
 import srvs from "@/services";
-import createRoutes from "@/lib/createRoutes";
+import createRoutes, { CreateRoutesOptions } from "@/lib/createRoutes";
 
 import error from "@/lib/middlewares/error";
 
+export type RouteOptions = 
+  Pick<CreateRoutesOptions, "prefix" | "jsonaFile" | "handlers" | "middlewares" | "securityHandlers">;
+
 export interface CreateAppOptions {
   beforeRoute: (app: Koa) => void;
-  routes: {
-    prefix: string,
-    jsonaFile: string,
-    handlers: any,
-    middlewares: {[k: string]: Koa.Middleware},
-    securityHandlers: {[k: string]: (config: string[]) => Koa.Middleware},
-  }[];
+  routes: RouteOptions[];
 }
 
 export default function createApp(options: CreateAppOptions) {

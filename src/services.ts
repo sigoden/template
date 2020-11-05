@@ -14,7 +14,7 @@ import * as settings from "@/settings";
 import * as Mock from "@/business/mock";
 import Redis from "@/business/redis";
 
-const emitter = new EventEmitter();
+export const emitter = new EventEmitter();
 
 const options = {
   logger: {
@@ -58,10 +58,6 @@ const options = {
     init: Echo.init,
     args: settings,
   } as Echo.Option<typeof settings>,
-  emitter: {
-    init: Echo.init,
-    args: emitter,
-  } as Echo.Option<EventEmitter>,
   mock: {
     init: Mock.init,
     args: {},

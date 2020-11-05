@@ -1,7 +1,21 @@
 import * as fs from "fs";
-import { getOperations } from "use-openapi";
-import { parseOpenApi } from "jsona-openapi-js";
 
+import { getOperations, Operation } from "use-openapi";
+import { parseOpenApi } from "jsona-openapi-js";
+import * as Koa from "koa";
+import * as Router from "koa-router";
+
+export interface CreateRoutesOptions {
+  prefix: string;
+  prod: boolean;
+  router: Router;
+  jsonaFile: string;
+  handlers: {[k: string]: any},
+  middlewares: {[k: string]: Koa.Middleware},
+  securityHandlers: {[k: string]: (config: string[]) => Koa.Middleware},
+  handleError: (error: any) => void,
+  beforeHook?: (operation: Operation, ctx: Koa.Context) => Promise<void>,
+}
 
 export default function createRoutes({
   prefix,
@@ -12,7 +26,8 @@ export default function createRoutes({
   middlewares,
   securityHandlers,
   handleError,
-}) {
+  beforeHook,
+}: CreateRoutesOptions) {
   const content = fs.readFileSync(jsonaFile, "utf8");
   const operations = getOperations(parseOpenApi(content));
   const missMiddlewares = [];
@@ -57,7 +72,9 @@ export default function createRoutes({
 
     prefix = prefix.endsWith("/") ? prefix.slice(0, -1) : prefix;
 
-    router[operation.method](prefix + operation.path, ...apiMiddlrewares, (ctx) => {
+    router[operation.method](prefix + operation.path, ...apiMiddlrewares, async (ctx: Koa.Context) => {
+      if (beforeHook) await beforeHook(operation, ctx);
+      if (ctx.request.body) return;
       const { request, params, headers, query } = ctx;
       const { body } = request;
       const req = { params, headers, query, body };
