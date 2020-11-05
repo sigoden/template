@@ -15,7 +15,7 @@
     }
   },
   staticFile: { @endpoint({summary:"静态文件","x-debugonly":true})
-    route: "POST /static/{}",
+    route: "GET /static/{}",
     req: {
       params: {
         name: "",  @description("jsona文件名") @schema({enum:["api"]})
