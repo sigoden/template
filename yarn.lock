@@ -3335,10 +3335,10 @@ use-openapi@0.3.6:
     openapi-types "^7.0.1"
     traverse "^0.6.6"
 
-use-services@0.2.2:
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/use-services/-/use-services-0.2.2.tgz#52bba8a9ed709a63f3e986c668ba89c93d1aac08"
-  integrity sha512-Wf2gODJu2AoZyiVt9m6sbnYIePT6krY7qKaHxAyJ8Wuyi/DOAsMDwXSP243lhpmE/TalAVt87IsGhDPZpNfoYw==
+use-services@0.2.6:
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/use-services/-/use-services-0.2.6.tgz#d7506b8dad95cd528d7314957a9189568ab7e37b"
+  integrity sha512-KbiI63MOw1lIIScaogRTmiVyAiv5Qn30IDei7TYrF7isQwRjDRU81q86fvigSk071pgSDSlGFqtOxEku48x5RA==
   dependencies:
     debug "^4.2.0"
     p-event "^4.2.0"
