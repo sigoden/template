@@ -43,11 +43,12 @@ function absolutePath(fileName) {
 
 function toIndex(tables) {
   let importModels = "";
+  let exportModels = "";
   let bootModels = "";
   tables.map(({ name }) => {
-    importModels += `import ${name} from "./${name}";
-export { ${name} };\n`;
+    importModels += `import ${name} from "./${name}";\n`;
     bootModels += `  ${name}.bootstrap(sequelize);\n`;
+    exportModels += `  ${name},\n`;
   });
   return `import { Sequelize } from "sequelize";
 
@@ -55,6 +56,9 @@ ${importModels}
 
 export function load(sequelize: Sequelize) {
 ${bootModels}}
+
+export {
+${exportModels}};
 `;
 }
 
