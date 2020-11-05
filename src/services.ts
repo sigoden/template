@@ -31,6 +31,7 @@ const options = {
       host: "0.0.0.0",
       password: "password",
     },
+    ctor: Redis,
   } as IORedis.Option<Redis>,
   sql: {
     init: Sequelize.init,
