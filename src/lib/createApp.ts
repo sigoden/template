@@ -24,6 +24,7 @@ export default function createApp(options: CreateAppOptions) {
 
   app.proxy = true;
   
+  options.beforeRoute(app);
   app.use(responseTime());
   app.use(helmet());
 
@@ -33,7 +34,6 @@ export default function createApp(options: CreateAppOptions) {
       enableTypes: ["json"],
     }),
   );
-  options.beforeRoute(app);
 
   const router = new Router();
   for (const item of options.routes) {

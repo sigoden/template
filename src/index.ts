@@ -12,16 +12,10 @@ import * as handlersInner from "@/handlersInner";
 runServer(srvs => {
   return createApp({
     beforeRoute: app => {
-      app.use(
-        cors({
-          origin: "*",
-          exposeHeaders: ["Authorization"],
-          credentials: true,
-          allowMethods: ["GET", "PUT", "POST", "DELETE"],
-          allowHeaders: ["Authorization", "Content-Type"],
-          keepHeadersOnError: true,
-        }),
-      );
+      app.use(cors({
+        origin: "*",
+        allowHeaders: "*",
+      }));
       return;
     },
     routes: [

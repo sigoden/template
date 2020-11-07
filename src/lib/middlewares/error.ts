@@ -18,10 +18,12 @@ export default function error() {
         if (err.status >= 500) {
           logger.error(err, collectHttpInfo(ctx));
         }
+        ctx.status = err.status;
         ctx.body = err.toJSON();
         return;
       }
       logger.error(err, collectHttpInfo(ctx));
+      ctx.status = 500;
       ctx.body = errs.ErrInternal.toJson({ message: "server error" });
     }
   };

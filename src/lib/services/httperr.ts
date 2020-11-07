@@ -32,6 +32,7 @@ export class HttpError<K extends CallArgs> extends Error {
   constructor(msg: string, code: string, status: number, extra?: any) {
     super(msg);
     this.name = code;
+    this.status = status;
     this.extra = extra;
   }
   public toJSON() {
