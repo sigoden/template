@@ -74,7 +74,7 @@ export default function createRoutes({
 
     router[operation.method](prefix + operation.path, ...apiMiddlrewares, async (ctx: Koa.Context) => {
       if (beforeHook) await beforeHook(operation, ctx);
-      if (ctx.request.body) return;
+      if (ctx.response.body) return;
       const { request, params, headers, query } = ctx;
       const { body } = request;
       const req = { params, headers, query, body };
