@@ -11,4 +11,3 @@ export interface HelloReq {
     word: string;
   };
 }
-

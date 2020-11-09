@@ -3,11 +3,11 @@ import Koa from "koa";
 
 export default function bearAuth(
   key: string,
-  parseToken: (token: string) => Promise<any>
+  parseToken: (token: string) => Promise<any>,
 ) {
   const { errs } = srvs;
   return async (ctx: Koa.Context, next: Koa.Next) => {
-    const authorization = ctx.headers["authorization"];
+    const authorization = ctx.headers.authorization;
     if (!authorization) {
       throw errs.ErrAuth.toError();
     }

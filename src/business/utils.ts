@@ -60,7 +60,7 @@ export function withQ(findOpts: FindOptions, query: { q?: string }): FindOptions
 }
 
 /**
- * ``` 
+ * ```
  * const userIter = tableIter<User>(User, 10, instance => (
  *   { where: { id: {[Op.gt]: instance ? instance.id : 0 }}, order: [["id", "asc"]] }
  * ));

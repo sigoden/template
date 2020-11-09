@@ -14,4 +14,3 @@ const content = fs.readFileSync(jsonaFile, "utf8");
 const openapi = parseOpenApi(content);
 const data = generate(openapi);
 fs.writeFileSync(path.resolve(__dirname, `../src/type${pascalCase(basename)}.ts`), data, "utf8");
-

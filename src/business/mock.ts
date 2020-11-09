@@ -11,8 +11,8 @@ export class Service {
   async delay(seconds: number) {
     await sleep(seconds);
   }
+
   async echo(data: any) {
     return data;
   }
 }
-

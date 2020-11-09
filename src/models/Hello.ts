@@ -9,7 +9,6 @@ interface HelloAttributes {
 }
 
 export default class Hello extends Model<HelloAttributes, Partial<HelloAttributes>> {
-
   // AutoGenModelAttrsBegin {
   public id!: number;
   public name!: string;
@@ -39,7 +38,7 @@ export default class Hello extends Model<HelloAttributes, Partial<HelloAttribute
         sequelize,
         tableName: "Hello",
         timestamps: false,
-      }
+      },
     );
   }
 }

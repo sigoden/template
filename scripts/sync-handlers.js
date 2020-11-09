@@ -36,7 +36,7 @@ function getOperationIds(spec) {
   for (const path in spec.paths) {
     const pathItem = spec.paths[path];
     for (const method of METHODS) {
-      const operation = pathItem[method]; 
+      const operation = pathItem[method];
       if (operation) {
         result.push(operation.operationId);
       }

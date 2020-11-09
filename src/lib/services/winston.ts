@@ -46,19 +46,24 @@ export class Service {
       transports,
     }));
   }
+
   public log(kind: "info" | "debug" | "warn" | "error", message: any, extra: any): void {
     const data = { ...this.wrapMessage(message), ...this.wrapExtra(extra) };
     this.loggers.forEach(logger => logger[kind](data));
   }
+
   public info(message: string, extra: any = {}): void {
     this.log("info", message, extra);
   }
+
   public debug(message: string, extra: any = {}): void {
     this.log("debug", message, extra);
   }
+
   public warn(message: string, extra: any = {}): void {
     this.log("warn", message, extra);
   }
+
   public error(message: Error | string, extra: any = {}): void {
     this.log("error", message, extra);
   }

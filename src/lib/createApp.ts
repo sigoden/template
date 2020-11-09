@@ -11,7 +11,7 @@ import createRoutes, { CreateRoutesOptions } from "@/lib/createRoutes";
 
 import error from "@/lib/middlewares/error";
 
-export type RouteOptions = 
+export type RouteOptions =
   Pick<CreateRoutesOptions, "prefix" | "jsonaFile" | "handlers" | "middlewares" | "securityHandlers">;
 
 export interface CreateAppOptions {
@@ -23,7 +23,7 @@ export default function createApp(options: CreateAppOptions) {
   const app = new Koa();
 
   app.proxy = true;
-  
+
   options.beforeRoute(app);
   app.use(responseTime());
   app.use(helmet());

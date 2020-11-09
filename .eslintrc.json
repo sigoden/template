@@ -8,7 +8,8 @@
     "tmp/"
   ],
   "extends": [
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/recommended",
+    "standard"
   ],
   "plugins": [
     "@typescript-eslint"
@@ -20,6 +21,8 @@
       "named": "never",
       "asyncArrow": "always"
     }],
+    "no-unused-vars": 0,
+    "no-template-curly-in-string": 0,
     "no-use-before-define": 0,
     "radix": 0,
     "eol-last": ["error", "always"],

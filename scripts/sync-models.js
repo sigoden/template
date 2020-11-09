@@ -36,7 +36,6 @@ tables.forEach(table => {
   }
 });
 
-
 function absolutePath(fileName) {
   return path.resolve(outputDir, fileName);
 }
@@ -45,7 +44,7 @@ function toIndex(tables) {
   let importModels = "";
   let exportModels = "";
   let bootModels = "";
-  tables.map(({ name }) => {
+  tables.forEach(({ name }) => {
     importModels += `import ${name} from "./${name}";\n`;
     bootModels += `  ${name}.bootstrap(sequelize);\n`;
     exportModels += `  ${name},\n`;
@@ -66,23 +65,23 @@ function updateModel(table, content) {
   const beginInterfaceAttrs = content.indexOf(regionMarks.beginInterfaceAttrs);
   const endInterfaceAttrs = content.indexOf(regionMarks.endInterfaceAttrs);
   if (beginInterfaceAttrs > -1 && endInterfaceAttrs > -1) {
-    content = content.slice(0, beginInterfaceAttrs)
-      + regionMarks.beginInterfaceAttrs + "\n"
-      + createInterfaceAttrs(table.columns) + content.slice(endInterfaceAttrs);
+    content = content.slice(0, beginInterfaceAttrs) +
+      regionMarks.beginInterfaceAttrs + "\n" +
+      createInterfaceAttrs(table.columns) + content.slice(endInterfaceAttrs);
   }
   const beginModelAttrs = content.indexOf(regionMarks.beginModelAttrs);
   const endModelAttrs = content.indexOf(regionMarks.endModelAttrs);
   if (beginModelAttrs > -1 && endModelAttrs > -1) {
-    content = content.slice(0, beginModelAttrs)
-      + regionMarks.beginModelAttrs + "\n"
-      + createModelAttrs(table.columns) + content.slice(endModelAttrs);
+    content = content.slice(0, beginModelAttrs) +
+      regionMarks.beginModelAttrs + "\n" +
+      createModelAttrs(table.columns) + content.slice(endModelAttrs);
   }
   const beginColumnDefs = content.indexOf(regionMarks.beginColumnDefs);
   const endColumnDefs = content.indexOf(regionMarks.endColumnDefs);
   if (beginColumnDefs > -1 && endColumnDefs > -1) {
-    content = content.slice(0, beginColumnDefs)
-      + regionMarks.beginColumnDefs + "\n"
-      + createColumnDefs(table.columns) + content.slice(endColumnDefs);
+    content = content.slice(0, beginColumnDefs) +
+      regionMarks.beginColumnDefs + "\n" +
+      createColumnDefs(table.columns) + content.slice(endColumnDefs);
   }
   return content;
 }
@@ -182,7 +181,6 @@ function spaces(n) {
 }
 
 function pruneTable(table) {
-  debugger;
   const name = table.name;
   const columns = table.columns.map(col => {
     const { sequelizeType, valueType } = getType(col.type, col.options.unsigned);
@@ -193,7 +191,7 @@ function pruneTable(table) {
       allowNull: col.options.nullable,
       autoIncrement: !!col.options.autoincrement,
       defaultValue: col.options.default ? !!col.options.default : undefined,
-      primaryKey: !!table.primaryKey.columns.find(v => v.column == col.name),
+      primaryKey: !!table.primaryKey.columns.find(v => v.column === col.name),
     };
   });
   return { name, columns };
@@ -201,56 +199,56 @@ function pruneTable(table) {
 
 function getType(type, unsigned) {
   if (type.datatype === "int") {
-    let suffix = unsigned ? ".UNSIGNED" : "";
-    let valueType = "number";
+    const suffix = unsigned ? ".UNSIGNED" : "";
+    const valueType = "number";
     if (type.width === 1) {
-      let sequelizeType = `TINYINT()${suffix}`;
+      const sequelizeType = `TINYINT()${suffix}`;
       return { sequelizeType, valueType };
     } else if (type.width === 8) {
-      let sequelizeType = `BIGINT()${suffix}`;
+      const sequelizeType = `BIGINT()${suffix}`;
       return { sequelizeType, valueType };
     } else {
-      let sequelizeType = `INTEGER()${suffix}`;
+      const sequelizeType = `INTEGER()${suffix}`;
       return { sequelizeType, valueType };
     }
   } else if (type.datatype === "decimal") {
-    let suffix = unsigned ? ".UNSIGNED" : "";
-    let valueType = DECIMAL_AS_STRING ? "string" : "number";
-    let sequelizeType = `DECIMAL(${type.digits},${type.decimals})${suffix}`;
+    const suffix = unsigned ? ".UNSIGNED" : "";
+    const valueType = DECIMAL_AS_STRING ? "string" : "number";
+    const sequelizeType = `DECIMAL(${type.digits},${type.decimals})${suffix}`;
     return { sequelizeType, valueType };
   } else if (type.datatype === "float") {
-    let suffix = unsigned ? ".UNSIGNED" : "";
-    let valueType = "number";
-    let sequelizeType = `FLOAT()${suffix}`;
+    const suffix = unsigned ? ".UNSIGNED" : "";
+    const valueType = "number";
+    const sequelizeType = `FLOAT()${suffix}`;
     return { valueType, sequelizeType };
   } else if (type.datatype === "double") {
-    let suffix = unsigned ? ".UNSIGNED" : "";
-    let valueType = "number";
-    let sequelizeType = `DOUBLE()${suffix}`;
+    const suffix = unsigned ? ".UNSIGNED" : "";
+    const valueType = "number";
+    const sequelizeType = `DOUBLE()${suffix}`;
     return { valueType, sequelizeType };
   } else if (type.datatype === "char") {
-    let valueType = "string";
-    let sequelizeType = `CHAR(${type.length})`;
+    const valueType = "string";
+    const sequelizeType = `CHAR(${type.length})`;
     return { valueType, sequelizeType };
   } else if (type.datatype === "varchar") {
-    let valueType = "string";
-    let sequelizeType = `STRING(${type.length})`;
+    const valueType = "string";
+    const sequelizeType = `STRING(${type.length})`;
     return { valueType, sequelizeType };
   } else if (type.datatype === "text") {
-    let valueType = "string";
-    let sequelizeType = "TEXT()";
+    const valueType = "string";
+    const sequelizeType = "TEXT()";
     return { valueType, sequelizeType };
   } else if (type.datatype === "datetime") {
-    let valueType = "Date";
-    let sequelizeType = "DATE()";
+    const valueType = "Date";
+    const sequelizeType = "DATE()";
     return { valueType, sequelizeType };
   } else if (type.datatype === "date") {
-    let valueType = "Date";
-    let sequelizeType = "DATEONLY()";
+    const valueType = "Date";
+    const sequelizeType = "DATEONLY()";
     return { valueType, sequelizeType };
   } else if (type.datatype === "timestamp") {
-    let valueType = "Date";
-    let sequelizeType = "DATE()";
+    const valueType = "Date";
+    const sequelizeType = "DATE()";
     return { valueType, sequelizeType };
   }
 }

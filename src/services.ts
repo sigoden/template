@@ -64,7 +64,6 @@ const options = {
   } as Mock.Option,
 };
 
-
 mergeJson(options, "../config.json");
 
 export { options };

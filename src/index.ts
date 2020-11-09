@@ -16,7 +16,6 @@ runServer(srvs => {
         origin: "*",
         allowHeaders: "*",
       }));
-      return;
     },
     routes: [
       {
