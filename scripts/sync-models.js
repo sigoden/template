@@ -52,7 +52,6 @@ function toIndex(tables) {
   return `import { Sequelize } from "sequelize";
 
 ${importModels}
-
 export function load(sequelize: Sequelize) {
 ${bootModels}}
 
@@ -184,13 +183,21 @@ function pruneTable(table) {
   const name = table.name;
   const columns = table.columns.map(col => {
     const { sequelizeType, valueType } = getType(col.type, col.options.unsigned);
+    let defaultValue;
+    if (col.options.default) {
+      if (col.options.default === "CURRENT_TIMESTAMP") {
+        defaultValue = "NOW";
+      } else {
+        defaultValue = col.options.default;
+      }
+    }
     return {
       colName: col.name,
       sequelizeType,
       valueType,
       allowNull: col.options.nullable,
       autoIncrement: !!col.options.autoincrement,
-      defaultValue: col.options.default ? !!col.options.default : undefined,
+      defaultValue,
       primaryKey: !!table.primaryKey.columns.find(v => v.column === col.name),
     };
   });
