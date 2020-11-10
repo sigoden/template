@@ -94,7 +94,6 @@ ${regionMarks.beginInterfaceAttrs}
 ${createInterfaceAttrs(columns)}${regionMarks.endInterfaceAttrs}\n}
 
 export default class ${name} extends Model<${name}Attributes, Partial<${name}Attributes>> {
-
 ${regionMarks.beginModelAttrs}
 ${createModelAttrs(columns)}${regionMarks.endModelAttrs}
 
@@ -108,7 +107,7 @@ ${spaces(6)}},
         sequelize,
         tableName: "${name}",
         timestamps: false,
-      }
+      },
     );
   }
 }
