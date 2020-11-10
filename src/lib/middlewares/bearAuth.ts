@@ -15,7 +15,12 @@ export default function bearAuth(
     if (!/^Bearer$/i.test(schema) || !token) {
       throw errs.ErrAuth.toError();
     }
-    const data = await parseToken(token);
+    let data: any;
+    try {
+      data = await parseToken(token);
+    } catch (err) {
+      throw errs.ErrAuth.toError();
+    }
     ctx.state[key] = data;
     await next();
   };
