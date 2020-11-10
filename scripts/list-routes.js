@@ -15,8 +15,8 @@ if (format === "simple") {
     console.log(`${o.operationId}: "${o.method.toUpperCase()} ${withPrefix(o.path)}",`);
   });
 } else {
-  let result = operations.reduce((acc, cur) => {
-    Object.assign(acc, {[cur.operationId]: {method: cur.method, path: withPrefix(cur.path) }});
+  const result = operations.reduce((acc, cur) => {
+    Object.assign(acc, { [cur.operationId]: { method: cur.method, path: withPrefix(cur.path) } });
     return acc;
   }, {});
   console.log(JSON.stringify(result, null, 2));
@@ -26,13 +26,12 @@ function withPrefix(path) {
   return prefix.endsWith("/") ? prefix.slice(0, -1) + path : prefix + path;
 }
 
-
 function getOperations(spec) {
   const result = [];
   for (const path in spec.paths) {
     const pathItem = spec.paths[path];
     for (const method of METHODS) {
-      const operation = pathItem[method]; 
+      const operation = pathItem[method];
       if (operation) {
         result.push({ operationId: operation.operationId, method, path });
       }
