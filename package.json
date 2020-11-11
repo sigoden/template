@@ -30,7 +30,7 @@
     "@types/koa": "^2.11.6",
     "@types/lodash": "^4.14.164",
     "ioredis": "^4.19.2",
-    "jsona-openapi-js": "^0.1.12",
+    "jsona-openapi-js": "^0.1.16",
     "jsonwebtoken": "^8.5.1",
     "kcors": "^2.2.2",
     "koa": "^2.13.0",
@@ -44,8 +44,8 @@
     "p-event": "^4.2.0",
     "sequelize": "6",
     "stoppable": "^1.1.0",
-    "use-openapi": "0.3.6",
-    "use-services": "0.2.6",
+    "use-openapi": "^0.3.6",
+    "use-services": "^0.2.6",
     "winston": "^3.3.3"
   },
   "devDependencies": {
