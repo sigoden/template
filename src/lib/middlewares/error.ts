@@ -8,7 +8,7 @@ export default function error() {
   return async (ctx: Koa.Context, next: Koa.Next) => {
     try {
       await next();
-      if (!ctx.response.body) {
+      if (typeof ctx.response.body === "undefined") {
         ctx.status = 404;
         ctx.body = errs.ErrNotFound.toJson();
         return;

@@ -53,7 +53,7 @@ export const runSrvs: Handler<apiInner.RunSrvsReq> = async (req, ctx) => {
   }
   const retValue = await fn.apply(_.get(srvs, parent), args);
   if (ret) {
-    ctx.body = retValue;
+    ctx.body = retValue || "";
   } else {
     ctx.body = "";
   }
