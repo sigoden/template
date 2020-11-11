@@ -3658,10 +3658,10 @@ typedarray-to-buffer@^3.1.5:
   dependencies:
     is-typedarray "^1.0.0"
 
-typegen-openapi@0.1.12:
-  version "0.1.12"
-  resolved "https://registry.yarnpkg.com/typegen-openapi/-/typegen-openapi-0.1.12.tgz#8c102e4820c90a6fb409e5ed408312daead30226"
-  integrity sha512-3hJvySTcr5KvCpuNKdak8AReE8Xe1YjkexSO7cK/TtmwquXdsWZmMRfE/94Fp1DOPBHFAMgnrKrGJEoLU2T/wA==
+typegen-openapi@^0.1.18:
+  version "0.1.18"
+  resolved "https://registry.yarnpkg.com/typegen-openapi/-/typegen-openapi-0.1.18.tgz#c870ac71502dbcb5722a88205b7d4d3ad457e908"
+  integrity sha512-A7zwphbNRoWtDiBzQ6rzcyQ85aJT19O1ue9GW/RP5YVQMJQNw06LwPvlt+84o9UWrs1h3VyPbFfRNoZFvSaaEQ==
   dependencies:
     change-case "^4.1.1"
     lodash.get "^4.4.2"
