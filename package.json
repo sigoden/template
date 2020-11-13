@@ -23,7 +23,7 @@
   "author": "",
   "license": "ISC",
   "_moduleAliases": {
-    "@": "./dist"
+    "@": "./src"
   },
   "dependencies": {
     "@types/ioredis": "^4.17.7",
