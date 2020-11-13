@@ -16,6 +16,9 @@
     "sync:handlers": "node ./scripts/sync-handlers.js api.jsona handlers",
     "sync:handlers:manage": "node ./scripts/sync-handlers.js apiManage.jsona handlersManage",
     "sync:handlers:inner": "node ./scripts/sync-handlers.js apiInner.jsona handlersInner",
+    "sync:api": "npm run sync:apitype && npm run sync:handlers",
+    "sync:api:manage": "npm run sync:apitype:manage && npm run sync:handlers:manage",
+    "sync:api:inner": "npm run sync:apitype:inner && npm run sync:handlers:inner",
     "test": "npm run htte",
     "htte": "htte htte/_config.yaml"
   },

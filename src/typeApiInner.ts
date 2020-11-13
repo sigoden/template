@@ -5,7 +5,7 @@ export interface RunSrvsReq {
   body: {
     path: string;
     args: any[];
-    ret: boolean;
+    ret?: boolean;
   };
 }
 
