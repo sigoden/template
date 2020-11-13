@@ -1,4 +1,4 @@
-import "module-alias/register";
+import "@/bootstrap";
 
 import * as jwt from "jsonwebtoken";
 import * as cors from "kcors";

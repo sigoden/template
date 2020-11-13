@@ -1,5 +1,5 @@
-require("module-alias/register");
 require("ts-node").register();
+require("../src/bootstrap");
 
 const fs = require("fs");
 const path = require("path");

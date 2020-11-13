@@ -6,7 +6,7 @@
   "scripts": {
     "start": "ts-node src/index.ts",
     "dev": "nodemon",
-    "lint": "npx eslint . --ext js --ext ts",
+    "lint": "eslint . --ext js --ext ts",
     "build": "tsc",
     "clean": "rimraf dist",
     "sync:models": "node ./scripts/sync-models.js db.sql src/models",
