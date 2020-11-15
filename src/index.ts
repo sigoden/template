@@ -9,7 +9,7 @@ import bearAuth from "@/lib/middlewares/bearAuth";
 import * as handlers from "@/handlers";
 import * as handlersInner from "@/handlersInner";
 
-runServer(srvs => {
+runServer(async srvs => {
   return createApp({
     beforeRoute: app => {
       app.use(cors({

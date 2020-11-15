@@ -5,7 +5,7 @@ import * as Koa from "koa";
 import { promisify } from "util";
 import { AppSevices, init } from "@/services";
 
-export default async function runServer(createApp: (srvs: AppSevices) => Koa) {
+export default async function runServer(createApp: (srvs: AppSevices) => Promise<Koa>) {
   let server;
   const srvs: AppSevices = {} as any;
   let stop;
@@ -13,7 +13,7 @@ export default async function runServer(createApp: (srvs: AppSevices) => Koa) {
     stop = await init(srvs);
     const { settings } = srvs;
     const { host, port } = settings;
-    const app = createApp(srvs);
+    const app = await createApp(srvs);
     server = stoppable(http.createServer(app.callback()), 7000);
     server.listen(port, host);
     server.stop = promisify(server.stop);
