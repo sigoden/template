@@ -166,7 +166,7 @@ ${spaces(10)}type: DataTypes.${sequelizeType},\n`;
     if (!primaryKey && !allowNull) {
       columnDefs += `${spaces(10)}allowNull: false,\n`;
     }
-    if (defaultValue) {
+    if (typeof defaultValue !== "undefined") {
       columnDefs += `${spaces(10)}defaultValue: ${defaultValue},\n`;
     }
     columnDefs += `${spaces(8)}},\n`;
@@ -183,7 +183,7 @@ function pruneTable(table) {
   const columns = table.columns.map(col => {
     const { sequelizeType, valueType } = getType(col.type, col.options.unsigned);
     let defaultValue;
-    if (col.options.default) {
+    if (typeof col.options.default !== "undefined") {
       if (col.options.default === "CURRENT_TIMESTAMP") {
         defaultValue = "NOW";
       } else {
