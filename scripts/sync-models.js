@@ -167,7 +167,11 @@ ${spaces(10)}type: DataTypes.${sequelizeType},\n`;
       columnDefs += `${spaces(10)}allowNull: false,\n`;
     }
     if (typeof defaultValue !== "undefined") {
-      columnDefs += `${spaces(10)}defaultValue: ${defaultValue},\n`;
+      if (defaultValue === "") {
+        columnDefs += `${spaces(10)}defaultValue: "",\n`;
+      } else {
+        columnDefs += `${spaces(10)}defaultValue: ${defaultValue},\n`;
+      }
     }
     columnDefs += `${spaces(8)}},\n`;
   });
