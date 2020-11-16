@@ -1,6 +1,7 @@
 import { Services, useServices } from "use-services";
 import { EventEmitter } from "events";
 import * as _ from "lodash";
+import * as fs from "fs";
 import * as path from "path";
 import * as Winston from "@/lib/services/winston";
 import * as IORedis from "@/lib/services/ioredis";
@@ -64,7 +65,7 @@ const options = {
   } as Mock.Option,
 };
 
-mergeJson(options, "../config.json");
+mergeJson(options, "config.json");
 
 export { options };
 export type AppSevices = Services<typeof options>;
@@ -80,8 +81,9 @@ export async function init(srvs: AppSevices) {
 export default srvs_;
 
 function mergeJson(data: any, file: string) {
-  file = path.resolve(__dirname, file);
+  file = path.resolve(process.env.CONFIG_FILE || process.cwd(), file);
   try {
-    _.merge(data, require(file)); // eslint-disable-line
-  } catch (err) { }
+    const content = fs.readFileSync(file, "utf8");
+    _.merge(data, JSON.parse(content));
+  } catch (err) {}
 }
