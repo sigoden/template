@@ -85,7 +85,7 @@ export default function createRoutes({
   }
   let routerError = null;
   if (missMiddlewares.length + missSecurityHandlers.length + missHandlers.length > 0) {
-    routerError = new Error("openapi createRoutes");
+    routerError = new Error(`mount ${jsonaFile} got errors:`);
     Object.assign(routerError, { missMiddlewares, missSecurityHandlers, missHandlers });
   }
   return routerError;
