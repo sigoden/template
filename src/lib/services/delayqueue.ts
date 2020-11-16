@@ -4,14 +4,18 @@ import { difference } from "lodash";
 import pLimit from "p-limit";
 import { Service as IORedisService } from "./ioredis";
 
+export type Option<A, S extends Service<A>> = ServiceOption<Args<A>, S>;
+
 export interface Args<A> {
-  handlers: HandlerMap<A>; // 处理方法
-  producers: ProducerMap<A>;
+  handlers: {
+    [k in keyof A]: HandlerFn<A[k]>;
+  };
+  producers: {
+    [k in keyof A]: ProducerOptions;
+  };
   pollInterval?: number; // 轮询redis间隔,单位秒
   ns?: string; // redis存队列
 }
-
-export type Option<A, S extends Service<A>> = ServiceOption<Args<A>, S>;
 
 export type Deps = [IORedisService];
 
@@ -48,12 +52,12 @@ redis.call("RENAME", KEYS[3], KEYS[5])
 return redis.call("GET", KEYS[5])
 `;
 
-export interface Context {
+export interface Context<T> {
   name: string;
   publishAt: number;
   scheduleAt: number;
   id: string;
-  data: any;
+  data: T;
   ack: () => void;
 }
 
@@ -64,15 +68,7 @@ export interface PendingTask {
   key: string;
 }
 
-export type HandlerFn = (ctx: Context) => Promise<void> | void;
-
-export type HandlerMap<A> = {
-  [k in keyof A]: HandlerFn;
-};
-
-export type ProducerMap<A> = {
-  [k in keyof A]: ProducerOptions;
-};
+export type HandlerFn<T> = (ctx: Context<T>) => Promise<void>;
 
 export interface ProducerOptions {
   pLimit?: number;
@@ -307,16 +303,16 @@ export class Service<A> {
 }
 
 export class DeeQueueNoHandlerError extends Error {
-  public readonly ctx: Context;
-  constructor(ctx: Context) {
+  public readonly ctx: Context<any>;
+  constructor(ctx: Context<any>) {
     super(`delayqueue: ${ctx.name} cannot find handler`);
     this.ctx = ctx;
   }
 }
 export class DeeQueueHandleError extends Error {
-  public readonly ctx: Context;
+  public readonly ctx: Context<any>;
   public readonly err: any;
-  constructor(ctx: Context, err: any) {
+  constructor(ctx: Context<any>, err: any) {
     super(`delayqueue: ${ctx.name} handle function rejected, err ${err}`);
     this.ctx = ctx;
     this.err = err;
