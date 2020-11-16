@@ -1,25 +1,21 @@
 {
-  "config": {
+  "logger": {
+    "args": {
+      "file": {
+        "filename": "server.log"
+      }
+    }
   },
-  "services": {
-    "logger": {
-      "args": {
-        "file": {
-          "filename": "server.log"
-        }
+  "sql": {
+    "args": {
+      "options": {
+        "host": "__CI_DB_HOST__"
       }
-    },
-    "sql": {
-      "args": {
-        "options": {
-          "host": "__CI_DB_HOST__"
-        }
-      }
-    },
-    "redis": {
-      "args": {
-        "host": "__CI_REDIS_HOST__"
-      }
+    }
+  },
+  "redis": {
+    "args": {
+      "host": "__CI_REDIS_HOST__"
     }
   }
 }
