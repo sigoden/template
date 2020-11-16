@@ -1,4 +1,4 @@
-import "@/bootstrap";
+import "./bootstrap";
 
 import * as jwt from "jsonwebtoken";
 import * as cors from "kcors";
