@@ -12,7 +12,7 @@ export interface Args<A> {
 
 export type Templates<A> = {
   [k in keyof A]: {
-    signName: string;
+    signName?: string;
     templateCode: string;
     templateContent?: string;
   }
@@ -43,7 +43,7 @@ export class Service<A> {
     const { signName, templateCode } = this.args.templates[name];
     const body = {
       phoneNumbers: typeof phonenum === "object" ? phonenum.join(",") : phonenum,
-      signName: signName,
+      signName: signName || this.args.defaultSignName,
       templateCode: templateCode,
       templateParam: data && JSON.stringify(data),
     };
@@ -67,7 +67,7 @@ export class Service<A> {
       if (item.data) {
         body.templateParamJson.push(item.data);
       }
-      body.signNameJson.push(signName);
+      body.signNameJson.push(signName || this.args.defaultSignName);
     }
     const postBody = {
       templateCode,
