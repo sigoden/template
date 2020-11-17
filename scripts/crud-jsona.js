@@ -1,4 +1,5 @@
 const fs = require("fs");
+const _ = require("lodash");
 const { camelCase } = require("change-case");
 const { Parser } = require("sql-ddl-to-json-schema");
 
@@ -16,7 +17,7 @@ const tables = parser.feed(content).toCompactJson();
 const table = tables.find(v => v.name === tableName);
 if (!table) exit(`No table ${tableName} exist in ${dbFile}`);
 
-const modelName = table.options.comment || tableName;
+const modelName = _.get(table, "options.comment", tableName);
 const model = pruneTable(table);
 console.log(generate(model));
 
@@ -56,7 +57,7 @@ function generate(model) {
     route: "GET /${camelCase(tableName)}s/{}",
     req: {
       params: {
-        id: 1,
+        ${idColumn.colName}: ${getFieldValue(idColumn)},
       },
     },
     res: {
@@ -65,7 +66,7 @@ function generate(model) {
     }
   },
   update${tableName}s: { @endpoint({summary:"修改${modelName}"})
-    route: "PUT /${camelCase(tableName)}/{}",
+    route: "PUT /${camelCase(tableName)}s/{}",
     req: {
       params: {
         ${idColumn.colName}: ${getFieldValue(idColumn)},
@@ -80,7 +81,7 @@ function generate(model) {
     }
   },
   delete${tableName}s: { @endpoint({summary:"删除${modelName}"})
-    route: "DELETE /posts/{}",
+    route: "DELETE /${camelCase(tableName)}s/{}",
     req: {
       params: {
         ${idColumn.colName}: ${getFieldValue(idColumn)},
@@ -91,7 +92,7 @@ function generate(model) {
         msg: "OK"
       }
     }
-  }
+  },
 `;
 }
 

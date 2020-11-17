@@ -1,5 +1,4 @@
 const fs = require("fs");
-const { camelCase } = require("change-case");
 const { Parser } = require("sql-ddl-to-json-schema");
 
 const DECIMAL_AS_STRING = true;
@@ -16,7 +15,6 @@ const tables = parser.feed(content).toCompactJson();
 const table = tables.find(v => v.name === tableName);
 if (!table) exit(`No table ${tableName} exist in ${dbFile}`);
 
-const modelName = table.options.comment || tableName;
 const model = pruneTable(table);
 console.log(generate(model));
 
@@ -25,7 +23,7 @@ function generate(model) {
   const idName = idColumn.colName;
   return `
 import { Handler, apiManage, okBody } from "@/type";
-import { Post } from "@/models";
+import { ${tableName} } from "@/models";
 import { withQ, withPagination } from "@/business/utils";
 
 import srvs from "@/services";
@@ -49,7 +47,7 @@ export const create${tableName}s: Handler<apiManage.Create${tableName}sReq> = as
   ctx.body = record;
 };
 
-export const getPosts: Handler<apiManage.Get${tableName}sReq> = async (req, ctx) => {
+export const get${tableName}s: Handler<apiManage.Get${tableName}sReq> = async (req, ctx) => {
   const record = await ${tableName}.findByPk(req.params.${idName});
   if (!record) {
     throw srvs.errs.ErrNoParamId.toError();
@@ -58,7 +56,7 @@ export const getPosts: Handler<apiManage.Get${tableName}sReq> = async (req, ctx)
 };
 
 export const update${tableName}s: Handler<apiManage.Update${tableName}sReq> = async (req, ctx) => {
-  const record = await ${tableName}.findByPk(req.params.id);
+  const record = await ${tableName}.findByPk(req.params.${idName});
   if (!record) {
     throw srvs.errs.ErrNoParamId.toError();
   }
@@ -71,11 +69,9 @@ export const delete${tableName}s: Handler<apiManage.Delete${tableName}sReq> = as
   if (!record) {
     throw srvs.errs.ErrNoParamId.toError();
   }
-  await ${tableName}.update({ status: 0 }, { where: { id: req.params.${idName} } });
+  await ${tableName}.update({ status: 0 }, { where: { ${idName}: req.params.${idName} } });
   ctx.body = okBody;
-};
-
-`;
+};`;
 }
 
 function listFields(columns) {
