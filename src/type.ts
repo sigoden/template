@@ -9,4 +9,6 @@ export interface KoaContextState extends Koa.DefaultState {
   }
 }
 
+export const okBody = { msg: "OK" };
+
 export { api, apiInner };

@@ -22,6 +22,10 @@ const ErrCodes = {
     status: 404,
     message: "not found",
   },
+  ErrNoParamId: {
+    status: 404,
+    message: "no model found",
+  },
   ErrQueryQ: {
     status: 404,
     message: "invalid query q",
