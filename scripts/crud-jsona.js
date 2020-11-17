@@ -52,7 +52,7 @@ function generate(model) {
       }
     }
   },
-  getPosts: { @endpoint({summary:"获取${modelName}详情"})
+  get${tableName}s: { @endpoint({summary:"获取${modelName}详情"})
     route: "GET /${camelCase(tableName)}s/{}",
     req: {
       params: {
@@ -64,7 +64,7 @@ function generate(model) {
       }
     }
   },
-  updatePosts: { @endpoint({summary:"修改${modelName}"})
+  update${tableName}s: { @endpoint({summary:"修改${modelName}"})
     route: "PUT /${camelCase(tableName)}/{}",
     req: {
       params: {
@@ -79,7 +79,7 @@ function generate(model) {
       }
     }
   },
-  deletePosts: { @endpoint({summary:"删除${modelName}"})
+  delete${tableName}s: { @endpoint({summary:"删除${modelName}"})
     route: "DELETE /posts/{}",
     req: {
       params: {
