@@ -6,8 +6,8 @@ const DECIMAL_AS_STRING = true;
 
 const [dbFile, outputDir] = process.argv.slice(2);
 if (!dbFile || !outputDir) {
-  console.log("Usage: node ./update-models.js <dbfile> <output>");
-  console.log("  e.g. node ./scripts/update-models.js db.sql src/models");
+  console.log("Usage: node ./sync-models.js <dbfile> <output>");
+  console.log("  e.g. node ./scripts/sync-models.js db.sql src/models");
   process.exit();
 }
 
@@ -259,6 +259,10 @@ function getType(type, unsigned) {
   } else if (type.datatype === "timestamp") {
     const valueType = "Date";
     const sequelizeType = "DATE()";
+    return { valueType, sequelizeType };
+  } else if (type.datatype === "json") {
+    const valueType = "any";
+    const sequelizeType = "JSON";
     return { valueType, sequelizeType };
   }
 }

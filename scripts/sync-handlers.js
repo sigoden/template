@@ -12,7 +12,7 @@ const METHODS = ["get", "put", "delete", "post", "options"];
 
 const [jsonaFile, handlersName] = process.argv.slice(2);
 if (!jsonaFile || !handlersName) {
-  console.log("Usage: node ./sync-apitype.js <jsona-file> <handlers-name>");
+  console.log("Usage: node ./sync-handlers.js <jsona-file> <handlers-name>");
   process.exit();
 }
 
