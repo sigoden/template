@@ -8,3 +8,7 @@ https://sigoden.github.io/jsona-openapi/?source=http://localhost:3000/_/static/a
 
 
 https://github.com/sigoden/jsona
+
+## 扩展服务
+
+https://gitlab.jiasuyunkeji.com/backend/common-services
