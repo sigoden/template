@@ -81,7 +81,7 @@ export async function init(srvs: AppSevices) {
 export default srvs_;
 
 function mergeJson(data: any, file: string) {
-  file = path.resolve(process.env.CONFIG_FILE || process.cwd(), file);
+  file = path.resolve(process.env.CONFIG_DIR || process.cwd(), file);
   try {
     const content = fs.readFileSync(file, "utf8");
     _.merge(data, JSON.parse(content));
