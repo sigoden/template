@@ -1,5 +1,5 @@
 import { ServiceOption, InitOption } from "use-services";
-import Client from "@alicloud/pop-core";
+import * as Client from "@alicloud/pop-core";
 
 export type Option<A, S extends Service<A>> = ServiceOption<Args<A>, S>;
 
