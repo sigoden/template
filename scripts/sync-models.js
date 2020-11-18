@@ -120,11 +120,8 @@ function createInterfaceAttrs(columns) {
     const {
       colName,
       valueType,
-      allowNull,
-      defaultValue,
     } = col;
-    const optional = !allowNull && typeof defaultValue === "undefined" ? "" : "?";
-    interfaceAttrs += `  ${colName}${optional}: ${valueType};\n`;
+    interfaceAttrs += `  ${colName}${isRequired(col) ? "" : "?"}: ${valueType};\n`;
   });
   return interfaceAttrs;
 }
@@ -135,13 +132,15 @@ function createModelAttrs(columns) {
     const {
       colName,
       valueType,
-      allowNull,
-      defaultValue,
     } = col;
-    const nonNull = !allowNull && typeof defaultValue === "undefined" ? "!" : "";
-    modelAttrs += `  public ${colName}${nonNull}: ${valueType};\n`;
+    modelAttrs += `  public ${colName}${isRequired(col) ? "!" : ""}: ${valueType};\n`;
   });
   return modelAttrs;
+}
+
+function isRequired(column) {
+  const { allowNull, defaultValue, autoIncrement } = column;
+  return !allowNull && typeof defaultValue === "undefined" && !autoIncrement;
 }
 
 function createColumnDefs(columns) {
