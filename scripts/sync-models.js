@@ -22,8 +22,20 @@ const regionMarks = {
 
 const content = fs.readFileSync(dbFile, "utf8");
 const parser = new Parser("mysql");
-let tables = parser.feed(content).toCompactJson();
-tables = tables.map(pruneTable);
+let tables;
+try {
+  tables = parser.feed(content).toCompactJson();
+  tables = tables.map(pruneTable);
+} catch (err) {
+  let msg;
+  if (err.message.indexOf("Syntax error") > -1) {
+    msg = err.message.split("\n").slice(0, 4).join("\n");
+  } else {
+    msg = err.message;
+  }
+  console.log(msg);
+  process.exit(1);
+}
 
 fs.writeFileSync(absolutePath("index.ts"), toIndex(tables), "utf8");
 tables.forEach(table => {
@@ -223,7 +235,7 @@ function getType(type, unsigned) {
   } else if (type.datatype === "decimal") {
     const suffix = unsigned ? ".UNSIGNED" : "";
     const valueType = DECIMAL_AS_STRING ? "string" : "number";
-    const sequelizeType = `DECIMAL(${type.digits},${type.decimals})${suffix}`;
+    const sequelizeType = `DECIMAL(${type.digits}, ${type.decimals})${suffix}`;
     return { sequelizeType, valueType };
   } else if (type.datatype === "float") {
     const suffix = unsigned ? ".UNSIGNED" : "";

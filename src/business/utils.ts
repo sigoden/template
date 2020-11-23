@@ -71,7 +71,7 @@ export function withQ(findOpts: FindOptions, query: { q?: string }): FindOptions
  * }
  * ```
  */
-export function tableIter<T>(ModelClass: any, limit: number, getFindOptsFn: (instance: T) => FindOptions) {
+export function tableIter<T>(ModelClass: any, limit: number, getFindOptsFn: (instance: T) => FindOptions<T>) {
   let instance = null;
   let done = false;
   return {
@@ -92,4 +92,32 @@ export function tableIter<T>(ModelClass: any, limit: number, getFindOptsFn: (ins
       };
     },
   };
+}
+
+/**
+ * Post: { postId: 1, title: "", userId: 3 }
+ * User: { id: 3, name: "" }
+ * expandModel: { postId: 1, title: "", userId: 3, userName: "" }
+ * ```
+ * const result = await expandModel(
+ *   posts,
+ *   "userId",
+ *   async ids => {
+ *     const users = await User.findAll({ where: { id: ids }, attributes: ["id", "name"] });
+ *     return users.map(v => ({ key: v.id, value: { userName: v.name } }));
+ *   },
+ * );
+ * ```
+ */
+export async function expandModel< X, Y, M extends keyof X, N extends { key: X[M], value: Y}>(
+  records: X[],
+  keyFrom: M,
+  mapFn: (keys: X[M][]) => Promise<N[]>,
+): Promise<(X & Y)[]> {
+  const keys = await records.map(item => item[keyFrom]);
+  const models = await mapFn(keys);
+  return records.map(item => {
+    const modelValue = models.find(v => v.key === item[keyFrom])?.value || {} as Y;
+    return { ...item, ...modelValue };
+  });
 }
