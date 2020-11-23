@@ -2,6 +2,8 @@ import "./bootstrap";
 
 import * as jwt from "jsonwebtoken";
 import * as cors from "kcors";
+import * as responseTime from "koa-response-time";
+import * as helmet from "koa-helmet";
 
 import runServer from "@/lib/runServer";
 import createApp from "@/lib/createApp";
@@ -11,11 +13,14 @@ import * as handlersInner from "@/handlersInner";
 
 runServer(async srvs => {
   return createApp({
-    beforeRoute: app => {
+    createRouter: app => {
+
       app.use(cors({
         origin: "*",
         allowHeaders: "*",
       }));
+      app.use(responseTime());
+      app.use(helmet());
     },
     routes: [
       {

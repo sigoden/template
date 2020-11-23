@@ -2,9 +2,7 @@ import * as path from "path";
 import * as _ from "lodash";
 import * as Koa from "koa";
 import * as bodyParser from "koa-bodyparser";
-import * as responseTime from "koa-response-time";
-import * as helmet from "koa-helmet";
-import * as Router from "koa-router";
+import * as Router from "@koa/router";
 
 import srvs from "@/services";
 import createRoutes, { CreateRoutesOptions } from "@/lib/createRoutes";
@@ -15,7 +13,7 @@ export type RouteOptions =
   Pick<CreateRoutesOptions, "prefix" | "jsonaFile" | "handlers" | "middlewares" | "securityHandlers">;
 
 export interface CreateAppOptions {
-  beforeRoute: (app: Koa) => void;
+  createRouter: (app: Koa) => Router | void;
   routes: RouteOptions[];
 }
 
@@ -24,9 +22,7 @@ export default function createApp(options: CreateAppOptions) {
 
   app.proxy = true;
 
-  options.beforeRoute(app);
-  app.use(responseTime());
-  app.use(helmet());
+  const router = options.createRouter(app) || new Router;
 
   app.use(error());
   app.use(
@@ -35,7 +31,6 @@ export default function createApp(options: CreateAppOptions) {
     }),
   );
 
-  const router = new Router();
   for (const item of options.routes) {
     const { prefix, jsonaFile, handlers, middlewares, securityHandlers } = item;
     const jsonaFilePath = path.resolve(srvs.settings.rootPath, jsonaFile);

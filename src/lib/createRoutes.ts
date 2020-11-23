@@ -3,7 +3,7 @@ import * as fs from "fs";
 import { getOperations, Operation } from "use-openapi";
 import { parseOpenApi } from "jsona-openapi-js";
 import * as Koa from "koa";
-import * as Router from "koa-router";
+import * as Router from "@koa/router";
 
 export interface CreateRoutesOptions {
   prefix: string;
