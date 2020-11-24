@@ -5,7 +5,7 @@ import * as bodyParser from "koa-bodyparser";
 import * as Router from "@koa/router";
 
 import srvs from "@/services";
-import createRoutes, { CreateRoutesOptions } from "@/lib/createRoutes";
+import createRoutes, { CreateRoutesOptions, OperationHookFn } from "@/lib/createRoutes";
 
 import error from "@/lib/middlewares/error";
 
@@ -14,6 +14,7 @@ export type RouteOptions =
 
 export interface CreateAppOptions {
   createRouter: (app: Koa) => Router | void;
+  operationHook?: OperationHookFn;
   routes: RouteOptions[];
 }
 
@@ -22,7 +23,7 @@ export default function createApp(options: CreateAppOptions) {
 
   app.proxy = true;
 
-  const router = options.createRouter(app) || new Router;
+  const router = options.createRouter(app) || new Router();
 
   app.use(error());
   app.use(
@@ -41,6 +42,7 @@ export default function createApp(options: CreateAppOptions) {
       jsonaFile: jsonaFilePath,
       handlers,
       middlewares,
+      operationHook: options.operationHook,
       securityHandlers,
       handleError: validateErrors => {
         throw srvs.errs.ErrValidation.toError({ extra: validateErrors });

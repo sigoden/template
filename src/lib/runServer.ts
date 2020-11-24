@@ -8,6 +8,14 @@ import { AppSevices, init } from "@/services";
 export default async function runServer(createApp: (srvs: AppSevices) => Promise<Koa>) {
   let server;
   const srvs: AppSevices = {} as any;
+  process.on("unhandledRejection", (reason) => {
+    const { logger } = srvs;
+    if (logger) srvs.logger.error(reason as any, { unhandledRejection: true });
+  });
+  process.on("uncaughtException", (err) => {
+    const { logger } = srvs;
+    if (logger) srvs.logger.error(err, { uncaughtException: true });
+  });
   let stop;
   try {
     stop = await init(srvs);
@@ -15,17 +23,11 @@ export default async function runServer(createApp: (srvs: AppSevices) => Promise
     const { host, port } = settings;
     const app = await createApp(srvs);
     server = stoppable(http.createServer(app.callback()), 7000);
-    server.listen(port, host);
     server.stop = promisify(server.stop);
+    server.listen(port, host);
     await pEvent(server, "listening");
     srvs.logger.debug(`server is listening on: ${host}:${port}`);
 
-    process.on("unhandledRejection", (reason) => {
-      srvs.logger.error(reason as any, { unhandledRejection: true });
-    });
-    process.on("uncaughtException", (err) => {
-      srvs.logger.error(err, { uncaughtException: true });
-    });
     await Promise.race([
       ...["SIGINT", "SIGHUP", "SIGTERM"].map(s =>
         pEvent(process, s, {
@@ -41,8 +43,10 @@ export default async function runServer(createApp: (srvs: AppSevices) => Promise
       console.log(err);
     }
   } finally {
-    if (server) {
-      await server.stop();
+    if (server.stop) {
+      try {
+        await server.stop();
+      } catch (err) {}
       if (srvs.logger) srvs.logger.debug("server close");
     }
     if (stop) await stop();

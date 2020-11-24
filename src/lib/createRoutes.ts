@@ -10,12 +10,16 @@ export interface CreateRoutesOptions {
   prod: boolean;
   router: Router;
   jsonaFile: string;
-  handlers: {[k: string]: any},
-  middlewares: {[k: string]: Koa.Middleware},
-  securityHandlers: {[k: string]: (config: string[]) => Koa.Middleware},
-  handleError: (error: any) => void,
-  beforeHook?: (operation: Operation, ctx: Koa.Context) => Promise<void>,
+  handlers: {[k: string]: any};
+  middlewares: {[k: string]: Koa.Middleware};
+  securityHandlers: {[k: string]: SecurityHandlerFn};
+  handleError: HandlerErrorFn;
+  operationHook?: OperationHookFn;
 }
+
+export type SecurityHandlerFn = (config: string[]) => Koa.Middleware;
+export type HandlerErrorFn = (error: any) => void;
+export type OperationHookFn = (operation: Operation, ctx: Koa.Context) => Promise<void>;
 
 export default function createRoutes({
   prefix,
@@ -26,7 +30,7 @@ export default function createRoutes({
   middlewares,
   securityHandlers,
   handleError,
-  beforeHook,
+  operationHook,
 }: CreateRoutesOptions) {
   const content = fs.readFileSync(jsonaFile, "utf8");
   const operations = getOperations(parseOpenApi(content));
@@ -73,7 +77,7 @@ export default function createRoutes({
     prefix = prefix.endsWith("/") ? prefix.slice(0, -1) : prefix;
 
     router[operation.method](prefix + operation.path, ...apiMiddlrewares, async (ctx: Koa.Context) => {
-      if (beforeHook) await beforeHook(operation, ctx);
+      if (operationHook) await operationHook(operation, ctx);
       if (ctx.response.body) return;
       const { request, params, headers, query } = ctx;
       const { body } = request;

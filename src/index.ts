@@ -14,7 +14,6 @@ import * as handlersInner from "@/handlersInner";
 runServer(async srvs => {
   return createApp({
     createRouter: app => {
-
       app.use(cors({
         origin: "*",
         allowHeaders: "*",
