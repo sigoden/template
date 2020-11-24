@@ -3,26 +3,32 @@ import "./bootstrap";
 import * as path from "path";
 import * as fs from "fs";
 import * as jwt from "jsonwebtoken";
-import * as cors from "kcors";
-import * as responseTime from "koa-response-time";
+import * as cors from "@koa/cors";
 import * as helmet from "koa-helmet";
+import * as bodyParser from "koa-bodyparser";
 import { parseOpenApi } from "jsona-openapi-js";
 
 import runServer from "@/lib/runServer";
 import createApp from "@/lib/createApp";
-import bearAuth from "@/lib/middlewares/bearAuth";
+import bearAuth from "@/middlewares/bearAuth";
+import error from "@/middlewares/error";
 import * as handlers from "@/handlers";
 import * as handlersInner from "@/handlersInner";
 
 runServer(async srvs => {
   return createApp({
     createRouter: app => {
+      app.use(error());
       app.use(cors({
         origin: "*",
         allowHeaders: "*",
       }));
-      app.use(responseTime());
       app.use(helmet());
+      app.use(
+        bodyParser({
+          enableTypes: ["json"],
+        }),
+      );
     },
     routes: [
       {

@@ -1,12 +1,9 @@
 import * as _ from "lodash";
 import * as Koa from "koa";
-import * as bodyParser from "koa-bodyparser";
 import * as Router from "@koa/router";
 
 import srvs from "@/services";
 import createRoutes, { CreateRoutesOptions } from "@/lib/createRoutes";
-
-import error from "@/lib/middlewares/error";
 
 export type RouteOptions =
   Pick<CreateRoutesOptions, "prefix" | "openapi" | "operationHook" | "handlers" | "middlewares" | "securityHandlers">;
@@ -22,13 +19,6 @@ export default function createApp(options: CreateAppOptions) {
   app.proxy = true;
 
   const router = options.createRouter(app) || new Router();
-
-  app.use(error());
-  app.use(
-    bodyParser({
-      enableTypes: ["json"],
-    }),
-  );
 
   for (const item of options.routes) {
     const { prefix, openapi, operationHook, handlers, middlewares, securityHandlers } = item;
