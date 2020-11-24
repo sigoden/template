@@ -43,7 +43,7 @@ export default async function runServer(createApp: (srvs: AppSevices) => Promise
       console.log(err);
     }
   } finally {
-    if (server.stop) {
+    if (server && server.stop) {
       try {
         await server.stop();
       } catch (err) {}
