@@ -1,4 +1,3 @@
-import * as path from "path";
 import * as _ from "lodash";
 import * as Koa from "koa";
 import * as bodyParser from "koa-bodyparser";
@@ -10,7 +9,7 @@ import createRoutes, { CreateRoutesOptions, OperationHookFn } from "@/lib/create
 import error from "@/lib/middlewares/error";
 
 export type RouteOptions =
-  Pick<CreateRoutesOptions, "prefix" | "jsonaFile" | "handlers" | "middlewares" | "securityHandlers">;
+  Pick<CreateRoutesOptions, "prefix" | "openapi" | "handlers" | "middlewares" | "securityHandlers">;
 
 export interface CreateAppOptions {
   createRouter: (app: Koa) => Router | void;
@@ -33,13 +32,12 @@ export default function createApp(options: CreateAppOptions) {
   );
 
   for (const item of options.routes) {
-    const { prefix, jsonaFile, handlers, middlewares, securityHandlers } = item;
-    const jsonaFilePath = path.resolve(srvs.settings.rootPath, jsonaFile);
+    const { prefix, openapi, handlers, middlewares, securityHandlers } = item;
     const routerError = createRoutes({
       prod: srvs.settings.prod,
       prefix,
       router,
-      jsonaFile: jsonaFilePath,
+      openapi,
       handlers,
       middlewares,
       operationHook: options.operationHook,

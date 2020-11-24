@@ -1,9 +1,12 @@
 import "./bootstrap";
 
+import * as path from "path";
+import * as fs from "fs";
 import * as jwt from "jsonwebtoken";
 import * as cors from "kcors";
 import * as responseTime from "koa-response-time";
 import * as helmet from "koa-helmet";
+import { parseOpenApi } from "jsona-openapi-js";
 
 import runServer from "@/lib/runServer";
 import createApp from "@/lib/createApp";
@@ -24,7 +27,7 @@ runServer(async srvs => {
     routes: [
       {
         prefix: "/",
-        jsonaFile: "api.jsona",
+        openapi: loadJsona("api.jsona"),
         handlers,
         middlewares: {},
         securityHandlers: {
@@ -35,7 +38,7 @@ runServer(async srvs => {
       },
       {
         prefix: "/_/",
-        jsonaFile: "apiInner.jsona",
+        openapi: loadJsona("apiInner.jsona"),
         handlers: handlersInner,
         middlewares: {},
         securityHandlers: {},
@@ -43,3 +46,9 @@ runServer(async srvs => {
     ],
   });
 });
+
+function loadJsona(file: string) {
+  file = path.resolve(process.env.CONFIG_DIR || process.cwd(), file);
+  const content = fs.readFileSync(file, "utf8");
+  return parseOpenApi(content);
+}

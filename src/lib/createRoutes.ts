@@ -1,7 +1,5 @@
-import * as fs from "fs";
-
 import { getOperations, Operation } from "use-openapi";
-import { parseOpenApi } from "jsona-openapi-js";
+import { OpenAPIV3 } from "openapi-types";
 import * as Koa from "koa";
 import * as Router from "@koa/router";
 
@@ -9,7 +7,7 @@ export interface CreateRoutesOptions {
   prefix: string;
   prod: boolean;
   router: Router;
-  jsonaFile: string;
+  openapi: OpenAPIV3.Document;
   handlers: {[k: string]: any};
   middlewares: {[k: string]: Koa.Middleware};
   securityHandlers: {[k: string]: SecurityHandlerFn};
@@ -25,15 +23,14 @@ export default function createRoutes({
   prefix,
   prod,
   router,
-  jsonaFile,
+  openapi,
   handlers,
   middlewares,
   securityHandlers,
   handleError,
   operationHook,
 }: CreateRoutesOptions) {
-  const content = fs.readFileSync(jsonaFile, "utf8");
-  const operations = getOperations(parseOpenApi(content));
+  const operations = getOperations(openapi);
   const missMiddlewares = [];
   const missHandlers = [];
   const missSecurityHandlers = [];
@@ -67,6 +64,7 @@ export default function createRoutes({
       if (!securityHandler) {
         missSecurityHandlers.push(name);
         passAllCheck = false;
+        continue;
       }
       apiMiddlrewares.push(securityHandler(config));
     }
@@ -89,7 +87,7 @@ export default function createRoutes({
   }
   let routerError = null;
   if (missMiddlewares.length + missSecurityHandlers.length + missHandlers.length > 0) {
-    routerError = new Error(`mount ${jsonaFile} got errors:`);
+    routerError = new Error(`mount openapi to '${prefix}' got errors:`);
     Object.assign(routerError, { missMiddlewares, missSecurityHandlers, missHandlers });
   }
   return routerError;
