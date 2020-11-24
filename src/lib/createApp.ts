@@ -4,16 +4,15 @@ import * as bodyParser from "koa-bodyparser";
 import * as Router from "@koa/router";
 
 import srvs from "@/services";
-import createRoutes, { CreateRoutesOptions, OperationHookFn } from "@/lib/createRoutes";
+import createRoutes, { CreateRoutesOptions } from "@/lib/createRoutes";
 
 import error from "@/lib/middlewares/error";
 
 export type RouteOptions =
-  Pick<CreateRoutesOptions, "prefix" | "openapi" | "handlers" | "middlewares" | "securityHandlers">;
+  Pick<CreateRoutesOptions, "prefix" | "openapi" | "operationHook" | "handlers" | "middlewares" | "securityHandlers">;
 
 export interface CreateAppOptions {
   createRouter: (app: Koa) => Router | void;
-  operationHook?: OperationHookFn;
   routes: RouteOptions[];
 }
 
@@ -32,7 +31,7 @@ export default function createApp(options: CreateAppOptions) {
   );
 
   for (const item of options.routes) {
-    const { prefix, openapi, handlers, middlewares, securityHandlers } = item;
+    const { prefix, openapi, operationHook, handlers, middlewares, securityHandlers } = item;
     const routerError = createRoutes({
       prod: srvs.settings.prod,
       prefix,
@@ -40,7 +39,7 @@ export default function createApp(options: CreateAppOptions) {
       openapi,
       handlers,
       middlewares,
-      operationHook: options.operationHook,
+      operationHook,
       securityHandlers,
       handleError: validateErrors => {
         throw srvs.errs.ErrValidation.toError({ extra: validateErrors });
