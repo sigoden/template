@@ -42,8 +42,8 @@ function generate(model) {
       }
     }
   },
-  create${tableName}s: { @endpoint({summary:"创建${modelName}"})
-    route: "POST /${camelCase(tableName)}s",
+  create${tableName}: { @endpoint({summary:"创建${modelName}"})
+    route: "POST /${camelCase(tableName)}",
     req: {
       body: {${createFields(model.columns)}
       }
@@ -53,8 +53,8 @@ function generate(model) {
       }
     }
   },
-  get${tableName}s: { @endpoint({summary:"获取${modelName}详情"})
-    route: "GET /${camelCase(tableName)}s/{}",
+  get${tableName}: { @endpoint({summary:"获取${modelName}详情"})
+    route: "GET /${camelCase(tableName)}/{}",
     req: {
       params: {
         ${idColumn.colName}: ${getFieldValue(idColumn)},
@@ -65,8 +65,8 @@ function generate(model) {
       }
     }
   },
-  update${tableName}s: { @endpoint({summary:"修改${modelName}"})
-    route: "PUT /${camelCase(tableName)}s/{}",
+  update${tableName}: { @endpoint({summary:"修改${modelName}"})
+    route: "PUT /${camelCase(tableName)}/{}",
     req: {
       params: {
         ${idColumn.colName}: ${getFieldValue(idColumn)},
@@ -80,8 +80,8 @@ function generate(model) {
       }
     }
   },
-  delete${tableName}s: { @endpoint({summary:"删除${modelName}"})
-    route: "DELETE /${camelCase(tableName)}s/{}",
+  delete${tableName}: { @endpoint({summary:"删除${modelName}"})
+    route: "DELETE /${camelCase(tableName)}/{}",
     req: {
       params: {
         ${idColumn.colName}: ${getFieldValue(idColumn)},

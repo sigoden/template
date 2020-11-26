@@ -47,7 +47,7 @@ export const create${tableName}s: Handler<apiManage.Create${tableName}sReq> = as
   ctx.body = record;
 };
 
-export const get${tableName}s: Handler<apiManage.Get${tableName}sReq> = async (req, ctx) => {
+export const get${tableName}: Handler<apiManage.Get${tableName}Req> = async (req, ctx) => {
   const record = await ${tableName}.findByPk(req.params.${idName});
   if (!record) {
     throw srvs.errs.ErrNoParamId.toError();
@@ -55,7 +55,7 @@ export const get${tableName}s: Handler<apiManage.Get${tableName}sReq> = async (r
   ctx.body = record;
 };
 
-export const update${tableName}s: Handler<apiManage.Update${tableName}sReq> = async (req, ctx) => {
+export const update${tableName}: Handler<apiManage.Update${tableName}Req> = async (req, ctx) => {
   const record = await ${tableName}.findByPk(req.params.${idName});
   if (!record) {
     throw srvs.errs.ErrNoParamId.toError();
@@ -64,7 +64,7 @@ export const update${tableName}s: Handler<apiManage.Update${tableName}sReq> = as
   ctx.body = okBody;
 };
 
-export const delete${tableName}s: Handler<apiManage.Delete${tableName}sReq> = async (req, ctx) => {
+export const delete${tableName}: Handler<apiManage.Delete${tableName}Req> = async (req, ctx) => {
   const record = await ${tableName}.findByPk(req.params.${idName});
   if (!record) {
     throw srvs.errs.ErrNoParamId.toError();
