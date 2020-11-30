@@ -1,8 +1,8 @@
 const fs = require("fs");
 const { parseOpenApi } = require("jsona-openapi-js");
-const [jsonaFile, prefix, format] = process.argv.slice(2);
+const [jsonaFile, prefix, format, operationSuffix = ""] = process.argv.slice(2);
 if (!jsonaFile || !prefix || !format) {
-  console.log("Usage: node ./list-routes.js <jsona-file> <prefix> <simple|json|htte> ");
+  console.log("Usage: node ./list-routes.js <jsona-file> <prefix> <simple|json|htte> [operationSuffix]");
   process.exit();
 }
 const METHODS = ["get", "put", "delete", "post", "options"];
@@ -12,20 +12,20 @@ const operations = getOperations(openapi);
 
 if (format === "json") {
   const result = operations.reduce((acc, cur) => {
-    Object.assign(acc, { [cur.operationId]: { method: cur.method, path: withPrefix(cur.path) } });
+    Object.assign(acc, { [`${cur.operationId}${operationSuffix}`]: { method: cur.method, path: withPrefix(cur.path) } });
     return acc;
   }, {});
   console.log(JSON.stringify(result, null, 2));
 } else if (format === "htte") {
   operations.forEach(o => {
-    console.log(`  ${o.operationId}:
+    console.log(`  ${o.operationId}${operationSuffix}:
     req:
       method: ${o.method}
       url: ${withPrefix(o.path)}`);
   });
 } else {
   operations.forEach(o => {
-    console.log(`${o.operationId}: "${o.method.toUpperCase()} ${withPrefix(o.path)}",`);
+    console.log(`${o.operationId}${operationSuffix}: "${o.method.toUpperCase()} ${withPrefix(o.path)}",`);
   });
 }
 
