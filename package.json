@@ -8,6 +8,7 @@
     "dev": "nodemon",
     "lint": "eslint . --ext js --ext ts",
     "build": "tsc",
+    "repl": "node  --experimental-repl-await scripts/repl.js",
     "clean": "rimraf dist",
     "sync:models": "node ./scripts/sync-models.js db.sql src/models",
     "sync:apitype": "node ./scripts/sync-apitype.js api.jsona",
