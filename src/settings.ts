@@ -4,7 +4,7 @@ const settings = {
   host: "0.0.0.0",
   port: 3000,
   prod: false,
-  rootPath: path.resolve(__dirname, "../"),
+  baseDir: process.env.BASE_DIR || path.resolve(__dirname, "../"),
   staticFiles: {
     api: "api.jsona",
   },

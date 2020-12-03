@@ -18,7 +18,7 @@
     route: "GET /static/{}",
     req: {
       params: {
-        name: "",  @description("jsona文件名") @schema({enum:["api"]})
+        name: "",  @description("jsona文件名")
       }
     }
   }

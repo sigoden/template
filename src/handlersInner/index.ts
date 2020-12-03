@@ -23,7 +23,7 @@ export const health: Handler<apiInner.HealthReq> = async (req, ctx) => {
 const cache = {};
 export const staticFile: Handler<apiInner.StaticFileReq> = async (req, ctx) => {
   const { name } = req.params;
-  const { staticFiles, rootPath } = srvs.settings;
+  const { staticFiles, baseDir } = srvs.settings;
   ctx.set("content-type", "text/plain; charset=utf-8");
   if (cache[name]) {
     ctx.body = cache[name];
@@ -34,7 +34,7 @@ export const staticFile: Handler<apiInner.StaticFileReq> = async (req, ctx) => {
     ctx.body = "NOT FOUND";
   }
   try {
-    const filePath = path.resolve(rootPath, staticFiles[name]);
+    const filePath = path.resolve(baseDir, staticFiles[name]);
     const data = await promisify(fs.readFile)(filePath, "utf8");
     cache[name] = data;
     ctx.body = data;

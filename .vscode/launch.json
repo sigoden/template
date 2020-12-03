@@ -10,6 +10,9 @@
             "name": "Launch Program",
             "program": "${workspaceFolder}/src/index.ts",
             "preLaunchTask": "npm: build",
+            "skipFiles": [
+                "<node_internals>/**/*.js"
+            ],
             "smartStep": true,
             "outputCapture": "std",
             "env": {
