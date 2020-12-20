@@ -1,10 +1,9 @@
-import * as path from "path";
 const settings = {
   app: "tempalte2",
   host: "0.0.0.0",
   port: 3000,
   prod: false,
-  baseDir: process.env.BASE_DIR || path.resolve(__dirname, "../"),
+  baseDir: process.env.BASE_DIR || process.cwd(),
   staticFiles: {
     api: "api.jsona",
   },
