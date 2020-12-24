@@ -70,15 +70,15 @@ mergeJson(options, "config.json");
 export { options };
 export type AppSevices = Services<typeof options>;
 
-const srvs_: AppSevices = {} as any;
+const srvs: AppSevices = {} as any;
 
-export async function init(srvs: AppSevices) {
-  const stop = await useServices(srvs, settings.app, emitter, options);
-  _.assign(srvs_, srvs);
+export async function init(srvs_: AppSevices) {
+  const stop = await useServices(srvs_, settings.app, emitter, options);
+  _.assign(srvs, srvs_);
   return stop;
 }
 
-export default srvs_;
+export default srvs;
 
 function mergeJson(data: any, file: string) {
   file = path.resolve(settings.baseDir, file);

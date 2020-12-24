@@ -54,7 +54,11 @@ export class ErrorFactory<K extends CallArgs> {
     this.status = params.status;
     this.createMessage = (args: K) => {
       try {
-        return template(params.message)(args);
+        if (params.args) {
+          return template(params.message)({ ...params.args, ...(args || {}) });
+        } else {
+          return template(params.message)(args);
+        }
       } catch (err) {
         return `cannot complete template<${params.message}> with args<${JSON.stringify(args)}>`;
       }

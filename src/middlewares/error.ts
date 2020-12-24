@@ -22,13 +22,7 @@ export default function error() {
         ctx.body = err.toJSON();
         return;
       }
-      if (err.name === "SyntaxError" && /Unexpected token/.test(err.message)) {
-        ctx.status = 400;
-        ctx.body = errs.ErrInternal.toJson({ message: "参数错误" });
-        return;
-      } else {
-        logger.error(err, collectHttpInfo(ctx));
-      }
+      logger.error(err, collectHttpInfo(ctx));
       ctx.status = 500;
       ctx.body = errs.ErrInternal.toJson({ message: "server error" });
     }

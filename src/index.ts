@@ -28,6 +28,9 @@ runServer(async srvs => {
       app.use(
         bodyParser({
           enableTypes: ["json"],
+          onerror: () => {
+            throw srvs.errs.ErrValidation.toError();
+          },
         }),
       );
     },

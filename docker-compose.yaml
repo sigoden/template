@@ -14,6 +14,6 @@ services:
     image: redis
     ports:
       - 6379:6379
-    command: redis-server --requirepass password
+    command: redis-server --requirepass password --appendonly yes
     volumes:
       - ./tmp/docker/redis:/data
