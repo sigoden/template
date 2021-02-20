@@ -3,32 +3,32 @@ const ErrCodes = {
     status: 500,
     message: "${message}",
     args: {
-      message: "server error",
+      message: "服务异常",
     },
   },
   ErrValidation: {
     status: 400,
-    message: "validation failed",
+    message: "参数错误",
   },
   ErrAuth: {
     status: 401,
-    message: "authorization failed",
+    message: "鉴权失败",
   },
   ErrPerm: {
     status: 403,
-    message: "permision denied",
+    message: "权限不足",
   },
   ErrNotFound: {
     status: 404,
-    message: "not found",
+    message: "资源不存在",
   },
   ErrNoParamId: {
     status: 404,
-    message: "no model found",
+    message: "记录不存在",
   },
   ErrQueryQ: {
     status: 404,
-    message: "invalid query q",
+    message: "无效Q",
   },
 };
 
