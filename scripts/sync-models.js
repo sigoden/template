@@ -11,7 +11,16 @@ if (!dbFile || !outputDir) {
   process.exit();
 }
 
-const regionMarks = {
+const indexRegionMarks = {
+  beginImport: "// AutoGenImportBegin {",
+  endImport: "// } AutoGenImportEnd",
+  beginBootstrap: `${spaces(2)}// AutoGenBootstrapBegin {`,
+  endBootstrap: `${spaces(2)}// } AutoGenBootstrapEnd`,
+  beginExport: `${spaces(2)}// AutoGenExportBegin {`,
+  endExport: `${spaces(2)}// } AutoGenExportEnd`,
+};
+
+const modelRegionMarks = {
   beginInterfaceAttrs: `${spaces(2)}// AutoGenIntefaceAttrBegin {`,
   endInterfaceAttrs: `${spaces(2)}// } AutoGenIntefaceAttrEnd`,
   beginModelAttrs: `${spaces(2)}// AutoGenModelAttrsBegin {`,
@@ -37,7 +46,14 @@ try {
   process.exit(1);
 }
 
-fs.writeFileSync(absolutePath("index.ts"), toIndex(tables), "utf8");
+const indexPath = absolutePath("index.ts");
+if (fs.existsSync(indexPath)) {
+  const content = fs.readFileSync(indexPath, "utf8");
+  fs.writeFileSync(indexPath, updateIndex(tables, content), "utf8");
+} else {
+  fs.writeFileSync(indexPath, toIndex(tables), "utf8");
+}
+
 tables.forEach(table => {
   const filePath = absolutePath(`${table.name}.ts`);
   if (fs.existsSync(absolutePath(filePath))) {
@@ -53,45 +69,93 @@ function absolutePath(fileName) {
 }
 
 function toIndex(tables) {
-  let importModels = "";
-  let exportModels = "";
-  let bootModels = "";
-  tables.forEach(({ name }) => {
-    importModels += `import ${name} from "./${name}";\n`;
-    bootModels += `  ${name}.bootstrap(sequelize);\n`;
-    exportModels += `  ${name},\n`;
-  });
+  const { importModels, exportModels, bootModels } = createIndexPairs(tables);
   return `import { Sequelize } from "sequelize";
 
+${indexRegionMarks.beginImport}
 ${importModels}
+${indexRegionMarks.endImport}
+
 export function load(sequelize: Sequelize) {
-${bootModels}}
+${indexRegionMarks.beginBootstrap}
+${bootModels}
+${indexRegionMarks.endBootstrap}
+}
 
 export {
-${exportModels}};
+${indexRegionMarks.beginExport}
+${exportModels}
+${indexRegionMarks.endExport}
+};
 `;
 }
 
+function updateIndex(tables, content) {
+  const { importModels, exportModels, bootModels } = createIndexPairs(tables);
+  const beginImport = content.indexOf(indexRegionMarks.beginImport);
+  const endImport = content.indexOf(indexRegionMarks.endImport);
+  if (beginImport > -1 && endImport > -1) {
+    content = content.slice(0, beginImport) +
+      indexRegionMarks.beginImport + "\n" +
+      importModels + "\n" + content.slice(endImport);
+  }
+
+  const beginBootstrap = content.indexOf(indexRegionMarks.beginBootstrap);
+  const endBootstrap = content.indexOf(indexRegionMarks.endBootstrap);
+  if (beginBootstrap > -1 && endBootstrap > -1) {
+    content = content.slice(0, beginBootstrap) +
+      indexRegionMarks.beginBootstrap + "\n" +
+      bootModels + "\n" + content.slice(endBootstrap);
+  }
+
+  const beginExport = content.indexOf(indexRegionMarks.beginExport);
+  const endExport = content.indexOf(indexRegionMarks.endExport);
+  if (beginExport > -1 && endExport > -1) {
+    content = content.slice(0, beginExport) +
+      indexRegionMarks.beginExport + "\n" +
+      exportModels + "\n" + content.slice(endExport);
+  }
+
+  return content;
+}
+
+function createIndexPairs(tables) {
+  const importModels = [];
+  const exportModels = [];
+  const bootModels = [];
+  tables.forEach(({ name }) => {
+    importModels.push(`import ${name}, { ${name}Attributes } from "./${name}";`);
+    bootModels.push(`  ${name}.bootstrap(sequelize);`);
+    exportModels.push(`  ${name},`);
+    exportModels.push(`  ${name}Attributes,`);
+  });
+  return {
+    importModels: importModels.join("\n"),
+    exportModels: exportModels.join("\n"),
+    bootModels: bootModels.join("\n"),
+  };
+}
+
 function updateModel(table, content) {
-  const beginInterfaceAttrs = content.indexOf(regionMarks.beginInterfaceAttrs);
-  const endInterfaceAttrs = content.indexOf(regionMarks.endInterfaceAttrs);
+  const beginInterfaceAttrs = content.indexOf(modelRegionMarks.beginInterfaceAttrs);
+  const endInterfaceAttrs = content.indexOf(modelRegionMarks.endInterfaceAttrs);
   if (beginInterfaceAttrs > -1 && endInterfaceAttrs > -1) {
     content = content.slice(0, beginInterfaceAttrs) +
-      regionMarks.beginInterfaceAttrs + "\n" +
+      modelRegionMarks.beginInterfaceAttrs + "\n" +
       createInterfaceAttrs(table.columns) + content.slice(endInterfaceAttrs);
   }
-  const beginModelAttrs = content.indexOf(regionMarks.beginModelAttrs);
-  const endModelAttrs = content.indexOf(regionMarks.endModelAttrs);
+  const beginModelAttrs = content.indexOf(modelRegionMarks.beginModelAttrs);
+  const endModelAttrs = content.indexOf(modelRegionMarks.endModelAttrs);
   if (beginModelAttrs > -1 && endModelAttrs > -1) {
     content = content.slice(0, beginModelAttrs) +
-      regionMarks.beginModelAttrs + "\n" +
+      modelRegionMarks.beginModelAttrs + "\n" +
       createModelAttrs(table.columns) + content.slice(endModelAttrs);
   }
-  const beginColumnDefs = content.indexOf(regionMarks.beginColumnDefs);
-  const endColumnDefs = content.indexOf(regionMarks.endColumnDefs);
+  const beginColumnDefs = content.indexOf(modelRegionMarks.beginColumnDefs);
+  const endColumnDefs = content.indexOf(modelRegionMarks.endColumnDefs);
   if (beginColumnDefs > -1 && endColumnDefs > -1) {
     content = content.slice(0, beginColumnDefs) +
-      regionMarks.beginColumnDefs + "\n" +
+      modelRegionMarks.beginColumnDefs + "\n" +
       createColumnDefs(table.columns) + content.slice(endColumnDefs);
   }
   return content;
@@ -101,19 +165,19 @@ function toModel(table) {
   const { name, columns } = table;
   return `import { Sequelize, Model, DataTypes, NOW } from "sequelize";
 
-interface ${name}Attributes {
-${regionMarks.beginInterfaceAttrs}
-${createInterfaceAttrs(columns)}${regionMarks.endInterfaceAttrs}\n}
+export interface ${name}Attributes {
+${modelRegionMarks.beginInterfaceAttrs}
+${createInterfaceAttrs(columns)}${modelRegionMarks.endInterfaceAttrs}\n}
 
 export default class ${name} extends Model<${name}Attributes, Partial<${name}Attributes>> {
-${regionMarks.beginModelAttrs}
-${createModelAttrs(columns)}${regionMarks.endModelAttrs}
+${modelRegionMarks.beginModelAttrs}
+${createModelAttrs(columns)}${modelRegionMarks.endModelAttrs}
 
   public static bootstrap(sequelize: Sequelize) {
     ${name}.init(
       {
-${regionMarks.beginColumnDefs}
-${createColumnDefs(columns)}${regionMarks.endColumnDefs}
+${modelRegionMarks.beginColumnDefs}
+${createColumnDefs(columns)}${modelRegionMarks.endColumnDefs}
 ${spaces(6)}},
       {
         sequelize,

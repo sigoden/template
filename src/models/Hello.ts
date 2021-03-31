@@ -1,8 +1,8 @@
 import { Sequelize, Model, DataTypes, NOW } from "sequelize";
 
-interface HelloAttributes {
+export interface HelloAttributes {
   // AutoGenIntefaceAttrBegin {
-  id: number;
+  id?: number;
   name: string;
   word: string;
   // } AutoGenIntefaceAttrEnd
@@ -10,7 +10,7 @@ interface HelloAttributes {
 
 export default class Hello extends Model<HelloAttributes, Partial<HelloAttributes>> {
   // AutoGenModelAttrsBegin {
-  public id!: number;
+  public id: number;
   public name!: string;
   public word!: string;
   // } AutoGenModelAttrsEnd
