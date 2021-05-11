@@ -47,7 +47,7 @@ deploy:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build --cache-from $CI_REGISTRY_IMAGE:latest -t $CI_REGISTRY_IMAGE:latest .
     - docker push $CI_REGISTRY_IMAGE:latest
-    - wget -O- --header "Content-Type:application/json" --post-data '{"name":"registry.jiasuyunkeji.com/backend/template2","tag":"latest"}' keel.keel:9300/v1/webhooks/native 
+    - wget -O- --header "Content-Type:application/json" --post-data '{"name":"registry.jiasuyunkeji.com/<group name>/<repo name>","tag":"latest"}' keel.keel:9300/v1/webhooks/native 
   only:
     refs:
       - master

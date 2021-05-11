@@ -30,9 +30,13 @@ export default async function runServer(createApp: (srvs: AppSevices) => Promise
 
     await Promise.race([
       ...["SIGINT", "SIGHUP", "SIGTERM"].map(s =>
-        pEvent(process, s, {
-          rejectionEvents: ["uncaughtException", "unhandledRejection"],
-        }),
+        pEvent(
+          process,
+          s,
+          // {
+          //   rejectionEvents: ["uncaughtException", "unhandledRejection"],
+          // },
+        ),
       ),
     ]);
   } catch (err) {
