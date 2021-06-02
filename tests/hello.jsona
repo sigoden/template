@@ -1,0 +1,59 @@
+{
+  login: { @describe("登录") @mixin(["login"])
+    req: {
+      header: {
+        'X-ORG-ID': 0,
+      },
+      body: {
+        name: "admin",
+        password: "adminpassword",
+      }
+    },
+    res: {
+      status: 200,
+      body: {
+        token: "", @type
+      }
+    }
+  },
+  sayHello: { @describe("打招呼") @mixin("hello")
+    req: {
+      header: {
+        Authorization: `"Bearer " + login.res.body.token`, @eval
+      },
+      body: {
+        name: `"sam" + rand.str(4, 2)`, @eval
+        word: `rand.str(8)`, @eval
+      },
+    },
+    res: {
+      status: 200,
+      body: {
+        message: `"Mr " + req.body.name + ", " + req.body.word`, @query
+      }
+    }
+  },
+  checkdb: { @describe("确认保存") @mixin("runSrvs")
+    req: {
+      body: {
+        path: "sql.models.Hello.findAll",
+        args: [
+          {
+            where: {
+              word: "sayHello.req.body.word", @eval
+            }
+          }
+        ]
+      }
+    },
+    res: {
+      body: [
+        {
+          id: 0, @type
+          name: "sayHello.req.body.name", @query
+          word: "sayHello.req.body.word", @query
+        }
+      ]
+    }
+  }
+}

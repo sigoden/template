@@ -8,8 +8,9 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceFolder}/src/index.ts",
-            "preLaunchTask": "npm: build",
+            "runtimeExecutable": "node",
+            "runtimeArgs": ["--nolazy", "-r", "ts-node/register/transpile-only"],
+            "args": ["src/index.ts"],
             "skipFiles": [
                 "<node_internals>/**/*.js"
             ],
@@ -18,9 +19,6 @@
             "env": {
                 "NODE_ENV": "development"
             },
-            "outFiles": [
-                "${workspaceFolder}/dist/**/*.js"
-            ]
         }
     ]
 }

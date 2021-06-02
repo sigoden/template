@@ -1,24 +1,4 @@
 {
-  "yaml.customTags": [
-    "!@and sequence",
-    "!@array sequence",
-    "!@arraylike mapping",
-    "!@compare mapping",
-    "!@eval mapping",
-    "!@exist",
-    "!@object mapping",
-    "!@or sequence",
-    "!@query",
-    "!@regexp",
-    "!@trycatch mapping",
-    "!$concat sequence",
-    "!$convert mapping",
-    "!$eval mapping",
-    "!$mock",
-    "!$query",
-    "!$randstr"
-  ],
-  
   "eslint.format.enable": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true

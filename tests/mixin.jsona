@@ -1,0 +1,20 @@
+{
+  "runSrvs": {
+    "req": {
+      "method": "post",
+      "url": "/_/srvs"
+    }
+  },
+  "login": {
+    "req": {
+      "method": "post",
+      "url": "/login"
+    }
+  },
+  "hello": {
+    "req": {
+      "method": "post",
+      "url": "/hello"
+    }
+  }
+}

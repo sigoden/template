@@ -6,7 +6,7 @@ import * as jwt from "jsonwebtoken";
 import * as cors from "@koa/cors";
 import * as helmet from "koa-helmet";
 import * as bodyParser from "koa-bodyparser";
-import { parseOpenApi } from "jsona-openapi-js";
+import { parse } from "jsona-openapi-js";
 import * as settings from "@/settings";
 
 import runServer from "@/lib/runServer";
@@ -60,5 +60,5 @@ runServer(async srvs => {
 function loadJsona(file: string) {
   file = path.resolve(settings.baseDir, file);
   const content = fs.readFileSync(file, "utf8");
-  return parseOpenApi(content);
+  return parse(content);
 }
