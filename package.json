@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "./dist/index.js",
   "scripts": {
-    "start": "ts-node src/index.ts",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts",
     "lint": "eslint . --ext js --ext ts",
     "build": "tsc",
     "clean": "rimraf dist",
@@ -17,7 +18,7 @@
     "sync:api": "npm run sync:apitype && npm run sync:handlers",
     "sync:api:manage": "npm run sync:apitype:manage && npm run sync:handlers:manage",
     "sync:api:inner": "npm run sync:apitype:inner && npm run sync:handlers:inner",
-    "test": "apitest tests"
+    "test": "apitest tests --ci"
   },
   "keywords": [],
   "author": "",

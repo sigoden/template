@@ -25,12 +25,9 @@ test:
     key: ${CI_COMMIT_REF_SLUG}
     untracked: true
     policy: pull
-  before_script:
-    - .gitlab/start-server.sh 3000
+
   script:
-    - HTTE_CI_MODE=true .gitlab/test.sh
-  after_script:
-    - .gitlab/on-failure.sh
+    - node .gitlab/test.js
 
 deploy:
   stage: deploy

@@ -37,7 +37,7 @@ const options = {
   sql: {
     init: Sequelize.init,
     args: {
-      database: "template2",
+      database: "template",
       username: "root",
       password: "password",
       options: {
