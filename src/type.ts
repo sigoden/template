@@ -12,7 +12,7 @@ declare module "koa" {
 
 export interface KoaContextState extends Koa.DefaultState {
   auth?: {
-    name: string;
+    userId: number;
   }
 }
 

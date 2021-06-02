@@ -6,7 +6,7 @@ const path = require("path");
 
 const { pascalCase } = require("change-case");
 const _ = require("lodash");
-const { parseOpenApi } = require("jsona-openapi-js");
+const { parse } = require("jsona-openapi-js");
 
 const METHODS = ["get", "put", "delete", "post", "options"];
 
@@ -18,7 +18,7 @@ if (!jsonaFile || !handlersName) {
 
 const handlers = require(path.join(__dirname, "../src", handlersName));
 const content = fs.readFileSync(jsonaFile, "utf8");
-const openapi = parseOpenApi(content);
+const openapi = parse(content);
 const operationIds = getOperationIds(openapi);
 const api = path.basename(jsonaFile, ".jsona");
 const missOperationIds = _.difference(operationIds, _.keys(handlers));

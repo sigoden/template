@@ -1,0 +1,64 @@
+{
+  createPost: { @describe("写文章") @mixin(["createPost", "auth1"])
+    req: {
+      body: {
+        title: `"How to write blog " + rand.str(8)`, @eval
+        content: `"Lorem Ipsum is simply dummy text of the printing and typesetting industry. "  + [rand.str(4), rand.str(5), rand.str(2), rand.str(8)].join(" ")`, @eval
+      }
+    },
+    res: {
+      body: {
+        id: 0, @type
+        userId: 0, @type
+        title: "", @type
+        status: 0, 
+        content: "", @type
+        createdAt: "", @type
+        updatedAt: "", @type
+      }
+    }
+  },
+  publishPost: { @describe("发布文章") @mixin(["publishPost", "auth1", "okRes"])
+    req: {
+      params: {
+        id: `createPost.res.body.id`, @eval
+      },
+    },
+  },
+  listMyPosts: { @describe("我的文章列表") @mixin(["listMyPosts","auth1"])
+    req: {
+    },
+    res: {
+      body: [ @partial
+        {
+          id: 0, @type
+          userId: 0, @type
+          title: "", @type
+          description: "", @type
+          status: 0, @type
+          content: "", @type
+          createdAt: "", @type
+          updatedAt: "", @type
+        }
+      ]
+    }
+  },
+  listPosts: { @describe("文章列表") @mixin(["listPosts"])
+    req: {
+    },
+    res: {
+      body: [ @partial
+        { 
+          id: 0, @type
+          userId: 0, @type
+          title: "", @type
+          description: "", @type
+          status: 1, 
+          content: "", @type
+          createdAt: "", @type
+          updatedAt: "", @type
+        }
+      ]
+    }
+  }
+}

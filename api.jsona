@@ -9,33 +9,103 @@
       { jwt: [] }
     ]
   })
+  signup: { @endpoint({summary:"注册",security:[]})
+    route: 'POST /signup',
+    req: {
+      body: {
+        name: 'user1',
+        pass: 'pass1',
+      }
+    },
+    res: {
+      200: {
+        id: 1,
+        name: 'user1',
+        token: '<token>',
+        expireAt: '<timestamp>'
+      }
+    }
+  },
   login: { @endpoint({summary:"登录",security:[]})
     route: 'POST /login',
     req: {
       body: {
         name: 'admin',
-        password: 'a123456'
+        pass: 'a123456'
       }
     },
     res: {
       200: {
-        token: "<token data>"
+        id: 1,
+        name: 'user1',
+        token: '<token>',
+        expireAt: '<timestamp>'
       }
     }
   },
-  hello: { @endpoint({summary:"打招呼"})
-    route: 'POST /hello',
+  createPost: { @endpoint({summary:"写文章"})
+    route: 'POST /posts',
     req: {
       body: {
-        name: 'Bob',
-        word: 'Good Morning',
+        title: 'How to write blog?',
+        description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry', @optional
+        content: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever`,
+      }
+    },
+    res: {
+      200: { @save("Post")
+        id: 1,
+        userId: 1,
+        title: 'How to write blog?',
+        description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry',
+        status: 0,
+        content: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever`,
+        createdAt: "<datetime>",
+        updateAt: "<datetime>",
+      }
+    }
+  },
+  publishPost: { @endpoint({summary:"发布文章"})
+    route: "PUT /posts/{}/publish",
+    req: {
+      params: {
+        id: 1
       }
     },
     res: {
       200: {
-        msg: 'Mr Bob, Good Morning'
+        msg: "OK"
       }
     }
+  },
+  listMyPosts: { @endpoint({summary:"查看我的文章列表"})
+    route: "GET /posts/my",
+    req: {
+      query: {
+        pageSize: 0, @optional
+        pageNum: 10, @optional
+      }
+    },
+    res: {
+      200: [
+        { @use("Post")
+        }
+      ]
+    }
+  },
+  listPosts: { @endpoint({summary:"查看文章列表",security:[]})
+    route: "GET /posts",
+    req: {
+      query: {
+        pageSize: 0, @optional
+        pageNum: 10, @optional
+      }
+    },
+    res: {
+      200: [
+        { @use("Post")
+        }
+      ]
+    }
   }
-
 }

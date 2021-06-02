@@ -1,18 +1,22 @@
 import { Sequelize } from "sequelize";
 
 // AutoGenImportBegin {
-import Hello, { HelloAttributes } from "./Hello";
+import User, { UserAttributes } from "./User";
+import Post, { PostAttributes } from "./Post";
 // } AutoGenImportEnd
 
 export function load(sequelize: Sequelize) {
   // AutoGenBootstrapBegin {
-  Hello.bootstrap(sequelize);
+  User.bootstrap(sequelize);
+  Post.bootstrap(sequelize);
   // } AutoGenBootstrapEnd
 }
 
 export {
   // AutoGenExportBegin {
-  Hello,
-  HelloAttributes,
+  User,
+  UserAttributes,
+  Post,
+  PostAttributes,
   // } AutoGenExportEnd
 };

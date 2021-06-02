@@ -9,5 +9,6 @@
   })
   @mixin("mixin")
   @jslib("@rand")
-  @module("hello")
+  @module("auth")
+  @module("post")
 }

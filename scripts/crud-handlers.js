@@ -5,7 +5,7 @@ const DECIMAL_AS_STRING = true;
 
 const [dbFile, tableName] = process.argv.slice(2);
 if (!dbFile || !tableName) {
-  console.log("Usage: node ./curd-handler.js <dbfile> <table>");
+  console.log("Usage: node ./curd-handlers.js <dbfile> <table>");
   process.exit();
 }
 

@@ -1,0 +1,24 @@
+{
+  variables: { @describe("变量") @client("echo")
+    req: {
+      name: "rand.str(4,2)", @eval
+      pass: "rand.str(8)", @eval
+    },
+  },
+  signup: { @describe("注册") @mixin(["signup", "loginRes"])
+    req: {
+      body: {
+        name: "variables.req.name", @eval
+        pass: "variables.req.name", @eval
+      }
+    }
+  },
+  login: { @describe("登录") @mixin(["login", "loginRes"])
+    req: {
+      body: {
+        name: "variables.req.name", @eval
+        pass: "variables.req.name", @eval
+      }
+    }
+  },
+}

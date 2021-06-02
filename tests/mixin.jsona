@@ -5,16 +5,66 @@
       "url": "/_/srvs"
     }
   },
-  "login": {
+  "signup": {
     "req": {
-      "method": "post",
-      "url": "/login"
+      "url": "/signup",
+      "method": "post"
     }
   },
-  "hello": {
+  "login": {
     "req": {
-      "method": "post",
-      "url": "/hello"
+      "url": "/login",
+      "method": "post"
+    }
+  },
+  "listPosts": {
+    "req": {
+      "url": "/posts",
+      "method": "get"
+    }
+  },
+  "createPost": {
+    "req": {
+      "url": "/posts",
+      "method": "post"
+    }
+  },
+  "publishPost": {
+    "req": {
+      "url": "/posts/{id}/publish",
+      "method": "put"
+    }
+  },
+  "listMyPosts": {
+    "req": {
+      "url": "/posts/my",
+      "method": "get"
+    }
+  },
+  auth1: {
+    req: {
+      header: {
+        authorization: `"Bearer " + auth.login.res.body.token`, @eval
+      }
+    }
+  },
+  loginRes: {
+    res: {
+      status: 200,
+      body: {
+        id: 0, @type
+        name: "", @type
+        token: "", @type
+        expireAt: 0, @type
+      }
+    }
+  },
+  okRes: {
+    res: {
+      status: 200,
+      body: {
+        msg: "OK"
+      }
     }
   }
 }

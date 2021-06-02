@@ -1,5 +1,6 @@
 import { FindOptions } from "sequelize";
 
+import * as bcrypt from "bcryptjs";
 import srvs from "@/services";
 import queryQ from "@/lib/queryQ";
 
@@ -120,4 +121,13 @@ export async function expandModel< X, Y, M extends keyof X, N extends { key: X[M
     const modelValue = models.find(v => v.key === item[keyFrom])?.value || {} as Y;
     return { ...item, ...modelValue };
   });
+}
+
+export async function passHash(pass) {
+  const salt = await bcrypt.genSalt(10);
+  return bcrypt.hash(pass, salt);
+}
+
+export async function passVerify(pass, hash) {
+  return bcrypt.compare(pass, hash);
 }

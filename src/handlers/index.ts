@@ -1,1 +1,2 @@
-export * from "@/handlers/hello";
+export * from "@/handlers/auth";
+export * from "@/handlers/post";

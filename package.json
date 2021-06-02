@@ -26,10 +26,12 @@
   "dependencies": {
     "@koa/cors": "^3.1.0",
     "@koa/router": "^10.0.0",
+    "@types/bcryptjs": "^2.4.2",
     "@types/ioredis": "^4.26.4",
     "@types/koa": "^2.13.3",
     "@types/lodash": "^4.14.170",
     "@types/node": "^15.6.2",
+    "bcryptjs": "^2.4.3",
     "ioredis": "^4.27.3",
     "jsona-openapi-js": "^0.2.0",
     "jsonwebtoken": "^8.5.1",

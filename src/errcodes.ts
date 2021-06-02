@@ -30,6 +30,23 @@ const ErrCodes = {
     status: 404,
     message: "无效Q",
   },
+
+  ErrUserName: {
+    status: 400,
+    message: "用户名已注册",
+  },
+  ErrNoUser: {
+    status: 404,
+    message: "用户未注册",
+  },
+  ErrForbidUser: {
+    status: 404,
+    message: "账户被封禁",
+  },
+  ErrCheckPass: {
+    status: 400,
+    message: "手机号或密码错误",
+  },
 };
 
 export = ErrCodes;
