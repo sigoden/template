@@ -49,6 +49,7 @@
     "winston": "^3.3.3"
   },
   "devDependencies": {
+    "@sigodenjs/apitest": "^0.3.1",
     "@types/jsonwebtoken": "^8.5.1",
     "@types/koa__router": "^8.0.4",
     "@typescript-eslint/eslint-plugin": "^4.26.0",
