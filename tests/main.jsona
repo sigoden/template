@@ -8,7 +8,6 @@
     }
   })
   @mixin("mixin")
-  @jslib("@rand")
   @module("auth")
   @module("post")
 }
