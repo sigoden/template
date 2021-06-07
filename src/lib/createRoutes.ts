@@ -1,5 +1,5 @@
 import { getOperations, Operation } from "use-openapi";
-import { OpenAPIV3 } from "openapi-types";
+import * as openapi from "jsona-openapi-js";
 import * as Koa from "koa";
 import * as Router from "@koa/router";
 
@@ -7,7 +7,7 @@ export interface CreateRoutesOptions {
   prefix: string;
   prod: boolean;
   router: Router;
-  openapi: OpenAPIV3.Document;
+  openapi: openapi.Spec;
   handlers: {[k: string]: any};
   middlewares: {[k: string]: Koa.Middleware};
   securityHandlers: {[k: string]: SecurityHandlerFn};
