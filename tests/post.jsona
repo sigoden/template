@@ -2,8 +2,8 @@
   createPost: { @describe("写文章") @mixin(["createPost", "auth1"])
     req: {
       body: {
-        title: `"How to write blog " + rand.str(8)`, @eval
-        content: `"Lorem Ipsum is simply dummy text of the printing and typesetting industry. "  + [rand.str(4), rand.str(5), rand.str(2), rand.str(8)].join(" ")`, @eval
+        title: "sentence", @mock
+        content: "paragraph", @mock
       }
     },
     res: {

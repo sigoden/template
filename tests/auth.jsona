@@ -1,8 +1,8 @@
 {
   variables: { @describe("变量") @client("echo")
     req: {
-      name: "rand.str(4,2)", @eval
-      pass: "rand.str(8)", @eval
+      name: "username(true)", @mock
+      pass: "string(12)", @mock
     },
   },
   signup: { @describe("注册") @mixin(["signup", "loginRes"])

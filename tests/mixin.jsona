@@ -43,7 +43,7 @@
   },
   auth1: {
     req: {
-      header: {
+      headers: {
         authorization: `"Bearer " + auth.login.res.body.token`, @eval
       }
     }
