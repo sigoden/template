@@ -1,4 +1,4 @@
-import * as Koa from "koa";
+import Koa from "koa";
 import * as api from "@/typeApi";
 import * as apiInner from "@/typeApiInner";
 

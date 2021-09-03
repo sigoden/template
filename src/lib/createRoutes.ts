@@ -1,7 +1,7 @@
 import { getOperations, Operation } from "use-openapi";
-import * as openapi from "jsona-openapi-js";
-import * as Koa from "koa";
-import * as Router from "@koa/router";
+import openapi from "jsona-openapi-js";
+import Koa from "koa";
+import Router from "@koa/router";
 
 export interface CreateRoutesOptions {
   prefix: string;

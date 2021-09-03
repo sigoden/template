@@ -1,7 +1,7 @@
-import * as fs from "fs";
-import * as path from "path";
+import fs from "fs";
+import path from "path";
 import { promisify } from "util";
-import * as _ from "lodash";
+import _ from "lodash";
 import { Handler, apiInner } from "@/type";
 import srvs from "@/services";
 

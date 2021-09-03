@@ -1,6 +1,6 @@
 import { FindOptions } from "sequelize";
 
-import * as bcrypt from "bcryptjs";
+import bcrypt from "bcryptjs";
 import srvs from "@/services";
 import queryQ from "@/lib/queryQ";
 

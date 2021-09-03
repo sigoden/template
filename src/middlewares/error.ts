@@ -1,6 +1,6 @@
 import srvs from "@/services";
 import Koa from "koa";
-import * as _ from "lodash";
+import _ from "lodash";
 import { HttpError } from "@/lib/services/httperr";
 
 export default function error() {

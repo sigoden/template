@@ -1,13 +1,13 @@
 import "./bootstrap";
 
-import * as path from "path";
-import * as fs from "fs";
-import * as jwt from "jsonwebtoken";
-import * as cors from "@koa/cors";
-import * as helmet from "koa-helmet";
-import * as bodyParser from "koa-bodyparser";
+import path from "path";
+import fs from "fs";
+import jwt from "jsonwebtoken";
+import cors from "@koa/cors";
+import helmet from "koa-helmet";
+import bodyParser from "koa-bodyparser";
 import { parse } from "jsona-openapi-js";
-import * as settings from "@/settings";
+import settings from "@/settings";
 
 import runServer from "@/lib/runServer";
 import createApp from "@/lib/createApp";

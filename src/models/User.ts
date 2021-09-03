@@ -1,5 +1,5 @@
 import { Sequelize, Model, DataTypes, NOW } from "sequelize";
-import * as jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import srvs from "@/services";
 
 export interface UserAttributes {

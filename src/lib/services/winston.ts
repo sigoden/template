@@ -1,4 +1,4 @@
-import * as winston from "winston";
+import winston from "winston";
 import { ServiceOption, InitOption } from "use-services";
 const { combine, json, timestamp } = winston.format;
 

@@ -1,8 +1,8 @@
 import { Services, useServices } from "use-services";
 import { EventEmitter } from "events";
-import * as _ from "lodash";
-import * as fs from "fs";
-import * as path from "path";
+import _ from "lodash";
+import fs from "fs";
+import path from "path";
 import * as Winston from "@/lib/services/winston";
 import * as IORedis from "@/lib/services/ioredis";
 import * as Sequelize from "@/lib/services/sequelize";

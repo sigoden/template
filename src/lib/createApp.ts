@@ -1,6 +1,6 @@
-import * as _ from "lodash";
-import * as Koa from "koa";
-import * as Router from "@koa/router";
+import _ from "lodash";
+import Koa from "koa";
+import Router from "@koa/router";
 
 import srvs from "@/services";
 import createRoutes, { CreateRoutesOptions } from "@/lib/createRoutes";
