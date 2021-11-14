@@ -10,7 +10,7 @@ https://github.com/sigoden/jsona
 
 ## 更多服务示例
 
-https://github.com/sigoden/use-services-example
+https://github.com/sigoden/use-services-packages
 
 ## 脚本工具
 
