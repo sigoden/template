@@ -3,7 +3,7 @@ import { sleep } from "@/business/utils";
 
 export type Option = ServiceOption<any, Service>;
 
-export async function init(_option: InitOption<any, Service>): Promise<Service> {
+export async function init(_: InitOption<any, Service>): Promise<Service> {
   return new Service();
 }
 

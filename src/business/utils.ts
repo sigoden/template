@@ -5,7 +5,7 @@ import srvs from "@/services";
 import queryQ from "@/lib/queryQ";
 
 export async function sleep(seconds: number) {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(resolve, seconds * 1000);
   });
 }
@@ -19,7 +19,11 @@ export async function sleep(seconds: number) {
  *   { pageSize: 20 },
  * ));
  */
-export function withPagination(findOpts: FindOptions, pc: PaginationControl, defaultPc: PaginationControl): FindOptions {
+export function withPagination(
+  findOpts: FindOptions,
+  pc: PaginationControl,
+  defaultPc: PaginationControl
+): FindOptions {
   let pageSize: number = defaultPc.pageSize || 10;
   if (pc.pageSize) pageSize = pc.pageSize;
   let pageNo: number = defaultPc.pageNo || 1;
@@ -48,7 +52,10 @@ export interface PaginationControl {
  *   req.srvs,
  * ));
  */
-export function withQ(findOpts: FindOptions, query: { q?: string }): FindOptions {
+export function withQ(
+  findOpts: FindOptions,
+  query: { q?: string }
+): FindOptions {
   const { q = "{}" } = query;
   let qObj: any;
   try {
@@ -72,7 +79,11 @@ export function withQ(findOpts: FindOptions, query: { q?: string }): FindOptions
  * }
  * ```
  */
-export function tableIter<T>(ModelClass: any, limit: number, getFindOptsFn: (instance: T) => FindOptions<T>) {
+export function tableIter<T>(
+  ModelClass: any,
+  limit: number,
+  getFindOptsFn: (instance: T) => FindOptions<T>
+) {
   let instance = null;
   let done = false;
   return {
@@ -110,15 +121,21 @@ export function tableIter<T>(ModelClass: any, limit: number, getFindOptsFn: (ins
  * );
  * ```
  */
-export async function expandModel< X, Y, M extends keyof X, N extends { key: X[M], value: Y}>(
+export async function expandModel<
+  X,
+  Y,
+  M extends keyof X,
+  N extends { key: X[M]; value: Y }
+>(
   records: X[],
   keyFrom: M,
-  mapFn: (keys: X[M][]) => Promise<N[]>,
+  mapFn: (keys: X[M][]) => Promise<N[]>
 ): Promise<(X & Y)[]> {
-  const keys = await records.map(item => item[keyFrom]);
+  const keys = await records.map((item) => item[keyFrom]);
   const models = await mapFn(keys);
-  return records.map(item => {
-    const modelValue = models.find(v => v.key === item[keyFrom])?.value || {} as Y;
+  return records.map((item) => {
+    const modelValue =
+      models.find((v) => v.key === item[keyFrom])?.value || ({} as Y);
     return { ...item, ...modelValue };
   });
 }

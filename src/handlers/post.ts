@@ -10,8 +10,9 @@ export const listPosts: Handler<api.ListPostReq> = async (req, ctx) => {
         where: { status: 1 },
       },
       req.query,
-      { pageSize: 10 },
-    ));
+      { pageSize: 10 }
+    )
+  );
   ctx.body = records;
 };
 
@@ -45,7 +46,8 @@ export const listMyPosts: Handler<api.ListMyPostsReq> = async (req, ctx) => {
         where: { userId },
       },
       req.query,
-      { pageSize: 10 },
-    ));
+      { pageSize: 10 }
+    )
+  );
   ctx.body = records;
 };

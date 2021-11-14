@@ -16,14 +16,16 @@ import error from "@/middlewares/error";
 import * as handlers from "@/handlers";
 import * as handlersInner from "@/handlersInner";
 
-runServer(async srvs => {
+runServer(async (srvs) => {
   return createApp({
-    createRouter: app => {
+    createRouter: (app) => {
       app.use(error());
-      app.use(cors({
-        origin: "*",
-        allowHeaders: "*",
-      }));
+      app.use(
+        cors({
+          origin: "*",
+          allowHeaders: "*",
+        })
+      );
       app.use(helmet());
       app.use(
         bodyParser({
@@ -31,7 +33,7 @@ runServer(async srvs => {
           onerror: () => {
             throw srvs.errs.ErrValidation.toError();
           },
-        }),
+        })
       );
     },
     routes: [
@@ -41,9 +43,10 @@ runServer(async srvs => {
         handlers,
         middlewares: {},
         securityHandlers: {
-          jwt: (_) => bearAuth("auth", async token => {
-            return jwt.verify(token, srvs.settings.tokenSecret);
-          }),
+          jwt: (_) =>
+            bearAuth("auth", async (token) => {
+              return jwt.verify(token, srvs.settings.tokenSecret);
+            }),
         },
       },
       {

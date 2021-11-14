@@ -23,12 +23,18 @@ const operationIds = getOperationIds(openapi);
 const api = path.basename(jsonaFile, ".jsona");
 const missOperationIds = _.difference(operationIds, _.keys(handlers));
 let todoContent = `import { Handler, ${api} } from "@/type";\n`;
-todoContent += missOperationIds.map(id => toOperation(id)).join("");
+todoContent += missOperationIds.map((id) => toOperation(id)).join("");
 
-fs.writeFileSync(path.join(__dirname, "../src", handlersName, "__todo__.ts"), todoContent, "utf8");
+fs.writeFileSync(
+  path.join(__dirname, "../src", handlersName, "__todo__.ts"),
+  todoContent,
+  "utf8"
+);
 
 function toOperation(operationId) {
-  return `\nexport const ${operationId}: Handler<${api}.${pascalCase(operationId)}Req> = async (req, ctx) => {
+  return `\nexport const ${operationId}: Handler<${api}.${pascalCase(
+    operationId
+  )}Req> = async (req, ctx) => {
   ctx.body = "TO IMPLEMENTED";
 };\n`;
 }

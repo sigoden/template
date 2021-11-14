@@ -13,7 +13,10 @@ export interface PostAttributes {
   // } AutoGenIntefaceAttrEnd
 }
 
-export default class Post extends Model<PostAttributes, Partial<PostAttributes>> {
+export default class Post extends Model<
+  PostAttributes,
+  Partial<PostAttributes>
+> {
   // AutoGenModelAttrsBegin {
   public id: number;
   public userId!: number;
@@ -68,7 +71,7 @@ export default class Post extends Model<PostAttributes, Partial<PostAttributes>>
         sequelize,
         tableName: "Post",
         timestamps: false,
-      },
+      }
     );
   }
 }

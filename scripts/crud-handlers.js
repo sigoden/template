@@ -12,14 +12,15 @@ if (!dbFile || !tableName) {
 const content = fs.readFileSync(dbFile, "utf8");
 const parser = new Parser("mysql");
 const tables = parser.feed(content).toCompactJson();
-const table = tables.find(v => v.name === tableName);
+const table = tables.find((v) => v.name === tableName);
 if (!table) exit(`No table ${tableName} exist in ${dbFile}`);
 
 const model = pruneTable(table);
 console.log(generate(model));
 
 function generate(model) {
-  const idColumn = model.columns.find(v => v.primaryKey === true) || model.columns[0];
+  const idColumn =
+    model.columns.find((v) => v.primaryKey === true) || model.columns[0];
   const idName = idColumn.colName;
   return `
 import { Handler, apiManage, okBody } from "@/type";
@@ -74,78 +75,6 @@ export const delete${tableName}: Handler<apiManage.Delete${tableName}Req> = asyn
 };`;
 }
 
-function listFields(columns) {
-  const spaces = " ".repeat(12);
-  let output = "";
-  for (const col of columns) {
-    output += `\n${spaces}${col.colName}: ${getFieldValue(col)},`;
-    if (col.comment) {
-      output += ` @description("${col.comment}")`;
-    }
-  }
-  return output;
-}
-
-function createFields(columns) {
-  const spaces = " ".repeat(8);
-  let output = "";
-
-  for (const col of columns) {
-    if (col.colName === "id" && col.autoIncrement) {
-      continue;
-    }
-    if (typeof col.defaultValue !== "undefined") {
-      continue;
-    }
-    output += `\n${spaces}${col.colName}: ${getFieldValue(col)},`;
-    const nonNull = !col.allowNull && typeof col.defaultValue === "undefined";
-    if (!nonNull) {
-      output += " @optional";
-    }
-    if (col.comment) {
-      output += ` @description("${col.comment}")`;
-    }
-  }
-  return output;
-}
-
-function updateFields(columns) {
-  const spaces = " ".repeat(8);
-  let output = "";
-
-  for (const col of columns) {
-    if (col.colName === "id" && col.autoIncrement) {
-      continue;
-    }
-    if (col.colName === "createdAt" && col.defaultValue === "NOW") {
-      continue;
-    }
-    output += `\n${spaces}${col.colName}: ${getFieldValue(col)}, @optional`;
-  }
-  return output;
-}
-
-function getFieldValue(column) {
-  if (typeof column.defaultValue !== "undefined") {
-    if (column.defaultValue === "NOW") {
-      return "\"<datetime>\"";
-    }
-    return column.defaultValue;
-  }
-  switch (column.valueType) {
-    case "number":
-      return 1;
-    case "string":
-      return "\"\"";
-    case "bool":
-      return false;
-    case "Date":
-      return "\"<datetime>\"";
-    default:
-      return "\"\"";
-  }
-}
-
 function exit(msg, exitCode = 1) {
   console.log(msg);
   process.exit(exitCode);
@@ -153,7 +82,7 @@ function exit(msg, exitCode = 1) {
 
 function pruneTable(table) {
   const name = table.name;
-  const columns = table.columns.map(col => {
+  const columns = table.columns.map((col) => {
     const { valueType } = getType(col.type, col.options.unsigned);
     let defaultValue;
     if (typeof col.options.default !== "undefined") {
@@ -170,7 +99,7 @@ function pruneTable(table) {
       allowNull: col.options.nullable,
       autoIncrement: !!col.options.autoincrement,
       defaultValue,
-      primaryKey: !!table.primaryKey.columns.find(v => v.column === col.name),
+      primaryKey: !!table.primaryKey.columns.find((v) => v.column === col.name),
     };
   });
   return { name, columns };

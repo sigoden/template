@@ -5,7 +5,9 @@ import Koa from "koa";
 import { promisify } from "util";
 import { AppSevices, init } from "@/services";
 
-export default async function runServer(createApp: (srvs: AppSevices) => Promise<Koa>) {
+export default async function runServer(
+  createApp: (srvs: AppSevices) => Promise<Koa>
+) {
   let server;
   const srvs: AppSevices = {} as any;
   process.on("unhandledRejection", (reason) => {
@@ -29,14 +31,14 @@ export default async function runServer(createApp: (srvs: AppSevices) => Promise
     srvs.logger.debug(`server is listening on: ${host}:${port}`);
 
     await Promise.race([
-      ...["SIGINT", "SIGHUP", "SIGTERM"].map(s =>
+      ...["SIGINT", "SIGHUP", "SIGTERM"].map((s) =>
         pEvent(
           process,
-          s,
+          s
           // {
           //   rejectionEvents: ["uncaughtException", "unhandledRejection"],
           // },
-        ),
+        )
       ),
     ]);
   } catch (err) {

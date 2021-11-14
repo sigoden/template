@@ -1,5 +1,4 @@
-export interface HealthReq {
-}
+export interface HealthReq {}
 
 export interface RunSrvsReq {
   body: {

@@ -3,7 +3,7 @@ import Koa from "koa";
 
 export default function bearAuth(
   key: string,
-  parseToken: (token: string) => Promise<any>,
+  parseToken: (token: string) => Promise<any>
 ) {
   const { errs } = srvs;
   return async (ctx: Koa.Context, next: Koa.Next) => {

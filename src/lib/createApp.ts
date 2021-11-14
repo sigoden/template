@@ -5,8 +5,15 @@ import Router from "@koa/router";
 import srvs from "@/services";
 import createRoutes, { CreateRoutesOptions } from "@/lib/createRoutes";
 
-export type RouteOptions =
-  Pick<CreateRoutesOptions, "prefix" | "openapi" | "operationHook" | "handlers" | "middlewares" | "securityHandlers">;
+export type RouteOptions = Pick<
+  CreateRoutesOptions,
+  | "prefix"
+  | "openapi"
+  | "operationHook"
+  | "handlers"
+  | "middlewares"
+  | "securityHandlers"
+>;
 
 export interface CreateAppOptions {
   createRouter: (app: Koa) => Router | void;
@@ -21,7 +28,14 @@ export default function createApp(options: CreateAppOptions) {
   const router = options.createRouter(app) || new Router();
 
   for (const item of options.routes) {
-    const { prefix, openapi, operationHook, handlers, middlewares, securityHandlers } = item;
+    const {
+      prefix,
+      openapi,
+      operationHook,
+      handlers,
+      middlewares,
+      securityHandlers,
+    } = item;
     const routerError = createRoutes({
       prod: srvs.settings.prod,
       prefix,
@@ -31,7 +45,7 @@ export default function createApp(options: CreateAppOptions) {
       middlewares,
       operationHook,
       securityHandlers,
-      handleError: validateErrors => {
+      handleError: (validateErrors) => {
         throw srvs.errs.ErrValidation.toError({ extra: validateErrors });
       },
     });
@@ -57,7 +71,9 @@ function handleRouteError(routerError) {
       message += `${spaces}miss middlewares ${missMiddlewares.join(" ")}\n`;
     }
     if (missSecurityHandlers.length) {
-      message += `${spaces}miss security handlers ${missMiddlewares.join(" ")}\n`;
+      message += `${spaces}miss security handlers ${missMiddlewares.join(
+        " "
+      )}\n`;
     }
     console.log(message);
   } else {

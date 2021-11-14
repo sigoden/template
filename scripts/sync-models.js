@@ -54,7 +54,7 @@ if (fs.existsSync(indexPath)) {
   fs.writeFileSync(indexPath, toIndex(tables), "utf8");
 }
 
-tables.forEach(table => {
+tables.forEach((table) => {
   const filePath = absolutePath(`${table.name}.ts`);
   if (fs.existsSync(absolutePath(filePath))) {
     const content = fs.readFileSync(filePath, "utf8");
@@ -95,25 +95,37 @@ function updateIndex(tables, content) {
   const beginImport = content.indexOf(indexRegionMarks.beginImport);
   const endImport = content.indexOf(indexRegionMarks.endImport);
   if (beginImport > -1 && endImport > -1) {
-    content = content.slice(0, beginImport) +
-      indexRegionMarks.beginImport + "\n" +
-      importModels + "\n" + content.slice(endImport);
+    content =
+      content.slice(0, beginImport) +
+      indexRegionMarks.beginImport +
+      "\n" +
+      importModels +
+      "\n" +
+      content.slice(endImport);
   }
 
   const beginBootstrap = content.indexOf(indexRegionMarks.beginBootstrap);
   const endBootstrap = content.indexOf(indexRegionMarks.endBootstrap);
   if (beginBootstrap > -1 && endBootstrap > -1) {
-    content = content.slice(0, beginBootstrap) +
-      indexRegionMarks.beginBootstrap + "\n" +
-      bootModels + "\n" + content.slice(endBootstrap);
+    content =
+      content.slice(0, beginBootstrap) +
+      indexRegionMarks.beginBootstrap +
+      "\n" +
+      bootModels +
+      "\n" +
+      content.slice(endBootstrap);
   }
 
   const beginExport = content.indexOf(indexRegionMarks.beginExport);
   const endExport = content.indexOf(indexRegionMarks.endExport);
   if (beginExport > -1 && endExport > -1) {
-    content = content.slice(0, beginExport) +
-      indexRegionMarks.beginExport + "\n" +
-      exportModels + "\n" + content.slice(endExport);
+    content =
+      content.slice(0, beginExport) +
+      indexRegionMarks.beginExport +
+      "\n" +
+      exportModels +
+      "\n" +
+      content.slice(endExport);
   }
 
   return content;
@@ -124,7 +136,9 @@ function createIndexPairs(tables) {
   const exportModels = [];
   const bootModels = [];
   tables.forEach(({ name }) => {
-    importModels.push(`import ${name}, { ${name}Attributes } from "./${name}";`);
+    importModels.push(
+      `import ${name}, { ${name}Attributes } from "./${name}";`
+    );
     bootModels.push(`  ${name}.bootstrap(sequelize);`);
     exportModels.push(`  ${name},`);
     exportModels.push(`  ${name}Attributes,`);
@@ -137,26 +151,37 @@ function createIndexPairs(tables) {
 }
 
 function updateModel(table, content) {
-  const beginInterfaceAttrs = content.indexOf(modelRegionMarks.beginInterfaceAttrs);
+  const beginInterfaceAttrs = content.indexOf(
+    modelRegionMarks.beginInterfaceAttrs
+  );
   const endInterfaceAttrs = content.indexOf(modelRegionMarks.endInterfaceAttrs);
   if (beginInterfaceAttrs > -1 && endInterfaceAttrs > -1) {
-    content = content.slice(0, beginInterfaceAttrs) +
-      modelRegionMarks.beginInterfaceAttrs + "\n" +
-      createInterfaceAttrs(table.columns) + content.slice(endInterfaceAttrs);
+    content =
+      content.slice(0, beginInterfaceAttrs) +
+      modelRegionMarks.beginInterfaceAttrs +
+      "\n" +
+      createInterfaceAttrs(table.columns) +
+      content.slice(endInterfaceAttrs);
   }
   const beginModelAttrs = content.indexOf(modelRegionMarks.beginModelAttrs);
   const endModelAttrs = content.indexOf(modelRegionMarks.endModelAttrs);
   if (beginModelAttrs > -1 && endModelAttrs > -1) {
-    content = content.slice(0, beginModelAttrs) +
-      modelRegionMarks.beginModelAttrs + "\n" +
-      createModelAttrs(table.columns) + content.slice(endModelAttrs);
+    content =
+      content.slice(0, beginModelAttrs) +
+      modelRegionMarks.beginModelAttrs +
+      "\n" +
+      createModelAttrs(table.columns) +
+      content.slice(endModelAttrs);
   }
   const beginColumnDefs = content.indexOf(modelRegionMarks.beginColumnDefs);
   const endColumnDefs = content.indexOf(modelRegionMarks.endColumnDefs);
   if (beginColumnDefs > -1 && endColumnDefs > -1) {
-    content = content.slice(0, beginColumnDefs) +
-      modelRegionMarks.beginColumnDefs + "\n" +
-      createColumnDefs(table.columns) + content.slice(endColumnDefs);
+    content =
+      content.slice(0, beginColumnDefs) +
+      modelRegionMarks.beginColumnDefs +
+      "\n" +
+      createColumnDefs(table.columns) +
+      content.slice(endColumnDefs);
   }
   return content;
 }
@@ -192,24 +217,22 @@ ${spaces(6)}},
 
 function createInterfaceAttrs(columns) {
   let interfaceAttrs = "";
-  columns.forEach(col => {
-    const {
-      colName,
-      valueType,
-    } = col;
-    interfaceAttrs += `  ${colName}${isRequired(col) ? "" : "?"}: ${valueType};\n`;
+  columns.forEach((col) => {
+    const { colName, valueType } = col;
+    interfaceAttrs += `  ${colName}${
+      isRequired(col) ? "" : "?"
+    }: ${valueType};\n`;
   });
   return interfaceAttrs;
 }
 
 function createModelAttrs(columns) {
   let modelAttrs = "";
-  columns.forEach(col => {
-    const {
-      colName,
-      valueType,
-    } = col;
-    modelAttrs += `  public ${colName}${isRequired(col) ? "!" : ""}: ${valueType};\n`;
+  columns.forEach((col) => {
+    const { colName, valueType } = col;
+    modelAttrs += `  public ${colName}${
+      isRequired(col) ? "!" : ""
+    }: ${valueType};\n`;
   });
   return modelAttrs;
 }
@@ -221,7 +244,7 @@ function isRequired(column) {
 
 function createColumnDefs(columns) {
   let columnDefs = "";
-  columns.forEach(col => {
+  columns.forEach((col) => {
     const {
       colName,
       sequelizeType,
@@ -259,8 +282,11 @@ function spaces(n) {
 
 function pruneTable(table) {
   const name = table.name;
-  const columns = table.columns.map(col => {
-    const { sequelizeType, valueType } = getType(col.type, col.options.unsigned);
+  const columns = table.columns.map((col) => {
+    const { sequelizeType, valueType } = getType(
+      col.type,
+      col.options.unsigned
+    );
     let defaultValue;
     if (typeof col.options.default !== "undefined") {
       if (col.options.default === "CURRENT_TIMESTAMP") {
@@ -276,7 +302,7 @@ function pruneTable(table) {
       allowNull: col.options.nullable,
       autoIncrement: !!col.options.autoincrement,
       defaultValue,
-      primaryKey: !!table.primaryKey.columns.find(v => v.column === col.name),
+      primaryKey: !!table.primaryKey.columns.find((v) => v.column === col.name),
     };
   });
   return { name, columns };

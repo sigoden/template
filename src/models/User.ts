@@ -12,7 +12,10 @@ export interface UserAttributes {
   // } AutoGenIntefaceAttrEnd
 }
 
-export default class User extends Model<UserAttributes, Partial<UserAttributes>> {
+export default class User extends Model<
+  UserAttributes,
+  Partial<UserAttributes>
+> {
   // AutoGenModelAttrsBegin {
   public id: number;
   public name!: string;
@@ -53,7 +56,7 @@ export default class User extends Model<UserAttributes, Partial<UserAttributes>>
         sequelize,
         tableName: "User",
         timestamps: false,
-      },
+      }
     );
   }
 
@@ -66,7 +69,7 @@ export default class User extends Model<UserAttributes, Partial<UserAttributes>>
       tokenSecret,
       {
         expiresIn: tokenExpiresIn,
-      },
+      }
     );
     return {
       id: this.id,

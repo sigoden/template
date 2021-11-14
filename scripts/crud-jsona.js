@@ -14,7 +14,7 @@ if (!dbFile || !tableName) {
 const content = fs.readFileSync(dbFile, "utf8");
 const parser = new Parser("mysql");
 const tables = parser.feed(content).toCompactJson();
-const table = tables.find(v => v.name === tableName);
+const table = tables.find((v) => v.name === tableName);
 if (!table) exit(`No table ${tableName} exist in ${dbFile}`);
 
 const modelName = _.get(table, "options.comment", tableName);
@@ -22,7 +22,8 @@ const model = pruneTable(table);
 console.log(generate(model));
 
 function generate(model) {
-  const idColumn = model.columns.find(v => v.primaryKey === true) || model.columns[0];
+  const idColumn =
+    model.columns.find((v) => v.primaryKey === true) || model.columns[0];
   return `  list${tableName}s: { @endpoint({summary:"${modelName}列表"})
     route: "GET /${camelCase(tableName)}s",
     req: {
@@ -150,7 +151,7 @@ function updateFields(columns) {
 function getFieldValue(column) {
   if (typeof column.defaultValue !== "undefined") {
     if (column.defaultValue === "NOW") {
-      return "\"<datetime>\"";
+      return '"<datetime>"';
     }
     return column.defaultValue;
   }
@@ -158,13 +159,13 @@ function getFieldValue(column) {
     case "number":
       return 1;
     case "string":
-      return "\"\"";
+      return '""';
     case "bool":
       return false;
     case "Date":
-      return "\"<datetime>\"";
+      return '"<datetime>"';
     default:
-      return "\"\"";
+      return '""';
   }
 }
 
@@ -175,7 +176,7 @@ function exit(msg, exitCode = 1) {
 
 function pruneTable(table) {
   const name = table.name;
-  const columns = table.columns.map(col => {
+  const columns = table.columns.map((col) => {
     const { valueType } = getType(col.type, col.options.unsigned);
     let defaultValue;
     if (typeof col.options.default !== "undefined") {
@@ -192,7 +193,7 @@ function pruneTable(table) {
       allowNull: col.options.nullable,
       autoIncrement: !!col.options.autoincrement,
       defaultValue,
-      primaryKey: !!table.primaryKey.columns.find(v => v.column === col.name),
+      primaryKey: !!table.primaryKey.columns.find((v) => v.column === col.name),
     };
   });
   return { name, columns };

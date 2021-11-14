@@ -8,16 +8,19 @@ export interface CreateRoutesOptions {
   prod: boolean;
   router: Router;
   openapi: Spec;
-  handlers: {[k: string]: any};
-  middlewares: {[k: string]: Koa.Middleware};
-  securityHandlers: {[k: string]: SecurityHandlerFn};
+  handlers: { [k: string]: any };
+  middlewares: { [k: string]: Koa.Middleware };
+  securityHandlers: { [k: string]: SecurityHandlerFn };
   handleError: HandlerErrorFn;
   operationHook?: OperationHookFn;
 }
 
 export type SecurityHandlerFn = (config: string[]) => Koa.Middleware;
 export type HandlerErrorFn = (error: any) => void;
-export type OperationHookFn = (operation: Operation, ctx: Koa.Context) => Promise<void>;
+export type OperationHookFn = (
+  operation: Operation,
+  ctx: Koa.Context
+) => Promise<void>;
 
 export default function createRoutes({
   prefix,
@@ -74,21 +77,32 @@ export default function createRoutes({
 
     prefix = prefix.endsWith("/") ? prefix.slice(0, -1) : prefix;
 
-    router[operation.method](prefix + operation.path, ...apiMiddlrewares, async (ctx: Koa.Context) => {
-      if (operationHook) await operationHook(operation, ctx);
-      if (ctx.response.body) return;
-      const { request, params, headers, query } = ctx;
-      const { body } = request;
-      const req = { params, headers, query, body };
-      const errors = operation.validate(req);
-      if (errors) return handleError(errors);
-      return handler(req, ctx);
-    });
+    router[operation.method](
+      prefix + operation.path,
+      ...apiMiddlrewares,
+      async (ctx: Koa.Context) => {
+        if (operationHook) await operationHook(operation, ctx);
+        if (ctx.response.body) return;
+        const { request, params, headers, query } = ctx;
+        const { body } = request;
+        const req = { params, headers, query, body };
+        const errors = operation.validate(req);
+        if (errors) return handleError(errors);
+        return handler(req, ctx);
+      }
+    );
   }
   let routerError = null;
-  if (missMiddlewares.length + missSecurityHandlers.length + missHandlers.length > 0) {
+  if (
+    missMiddlewares.length + missSecurityHandlers.length + missHandlers.length >
+    0
+  ) {
     routerError = new Error(`mount openapi to '${prefix || "/"}' got errors:`);
-    Object.assign(routerError, { missMiddlewares, missSecurityHandlers, missHandlers });
+    Object.assign(routerError, {
+      missMiddlewares,
+      missSecurityHandlers,
+      missHandlers,
+    });
   }
   return routerError;
 }

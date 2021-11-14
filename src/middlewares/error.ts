@@ -46,5 +46,12 @@ function collectHttpInfo(ctx: Koa.Context) {
   const { request } = ctx;
   const { url, query, headers, body } = request;
   const { auth, authM } = _.pick(ctx.state, ["auth", "authM"]);
-  return { url, query, headers: _.omit(headers, OMIT_HEADERS), auth, authM, body };
+  return {
+    url,
+    query,
+    headers: _.omit(headers, OMIT_HEADERS),
+    auth,
+    authM,
+    body,
+  };
 }

@@ -32,10 +32,10 @@ export default function queryQ(q: any): void {
 function iter(obj) {
   if (typeof obj === "object" && obj !== null) {
     if (Array.isArray(obj)) {
-      return obj.map(v => iter(v));
+      return obj.map((v) => iter(v));
     } else {
       const newObj = {};
-      Object.keys(obj).forEach(key => {
+      Object.keys(obj).forEach((key) => {
         const newValue = iter(obj[key]);
         const newKey = OpKeys.indexOf(key) > -1 ? Ops[key] : key;
         newObj[newKey] = newValue;
