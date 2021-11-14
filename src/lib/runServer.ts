@@ -1,6 +1,6 @@
 import http from "http";
 import stoppable from "stoppable";
-import pEvent from "p-event";
+import { pEvent } from "p-event";
 import Koa from "koa";
 import { promisify } from "util";
 import { AppSevices, init } from "@/services";
