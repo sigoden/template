@@ -1,11 +1,11 @@
 import srvs from "@/services";
-import Koa from "koa";
+import { Context, Middleware } from "kisa";
 import _ from "lodash";
-import { HttpError } from "@/lib/services/httperr";
+import { HttpError } from "@use-services/httperr";
 
-export default function error() {
+export default function error(): Middleware {
   const { errs, logger } = srvs;
-  return async (ctx: Koa.Context, next: Koa.Next) => {
+  return async (ctx, next) => {
     try {
       await next();
       if (typeof ctx.response.body === "undefined") {
@@ -42,7 +42,7 @@ const OMIT_HEADERS = [
   "user-agent",
 ];
 
-function collectHttpInfo(ctx: Koa.Context) {
+function collectHttpInfo(ctx: Context) {
   const { request } = ctx;
   const { url, query, headers, body } = request;
   const { auth, authM } = _.pick(ctx.state, ["auth", "authM"]);

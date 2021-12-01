@@ -25,7 +25,7 @@ function generate(model) {
   return `
 import { Handler, apiManage, okBody } from "@/type";
 import { ${tableName} } from "@/models";
-import { withQ, withPagination } from "@/business/utils";
+import { withQ, withPagination } from "@/lib/utils";
 
 import srvs from "@/services";
 

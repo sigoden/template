@@ -1,12 +1,12 @@
 import srvs from "@/services";
-import Koa from "koa";
+import { Middleware } from "kisa";
 
 export default function bearAuth(
   key: string,
   parseToken: (token: string) => Promise<any>
-) {
+): Middleware {
   const { errs } = srvs;
-  return async (ctx: Koa.Context, next: Koa.Next) => {
+  return async (ctx, next) => {
     const authorization = ctx.headers.authorization;
     if (!authorization) {
       throw errs.ErrAuth.toError();

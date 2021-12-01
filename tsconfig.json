@@ -6,7 +6,7 @@
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "target": "es2018",
-    "sourceMap": true,
+    "sourceMap": false,
     "outDir": "./dist",
     "baseUrl": "./src",
     "lib": ["ES2018"],

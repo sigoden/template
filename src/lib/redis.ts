@@ -1,5 +1,5 @@
 import srvs from "@/services";
-import { Service } from "@/lib/services/ioredis";
+import { Service } from "@use-services/ioredis";
 
 export default class Redis extends Service {
   public sep = ":";

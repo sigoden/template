@@ -1,2 +1,7 @@
-export * from "@/handlers/auth";
-export * from "@/handlers/post";
+import registerAuth from "@/handlers/auth";
+import registerPost from "@/handlers/post";
+
+export default function register() {
+  registerAuth();
+  registerPost();
+}

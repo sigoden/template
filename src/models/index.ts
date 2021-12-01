@@ -5,7 +5,7 @@ import User, { UserAttributes } from "./User";
 import Post, { PostAttributes } from "./Post";
 // } AutoGenImportEnd
 
-export function load(sequelize: Sequelize) {
+export async function setup(sequelize: Sequelize) {
   // AutoGenBootstrapBegin {
   User.bootstrap(sequelize);
   Post.bootstrap(sequelize);

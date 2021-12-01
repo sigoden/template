@@ -1,67 +1,62 @@
 import "./bootstrap";
 
-import path from "path";
-import fs from "fs";
-import jwt from "jsonwebtoken";
-import cors from "@koa/cors";
-import helmet from "koa-helmet";
-import bodyParser from "koa-bodyparser";
-import { parse } from "jsona-openapi-js";
-import settings from "@/settings";
+import http from "http";
+import stoppable from "stoppable";
+import pEvent from "p-event";
+import { promisify } from "util";
 
-import runServer from "@/lib/runServer";
-import createApp from "@/lib/createApp";
-import bearAuth from "@/middlewares/bearAuth";
-import error from "@/middlewares/error";
-import * as handlers from "@/handlers";
-import * as handlersInner from "@/handlersInner";
+import srvs, { init } from "@/services";
+import createApp from "@/app";
 
-runServer(async (srvs) => {
-  return createApp({
-    createRouter: (app) => {
-      app.use(error());
-      app.use(
-        cors({
-          origin: "*",
-          allowHeaders: "*",
-        })
-      );
-      app.use(helmet());
-      app.use(
-        bodyParser({
-          enableTypes: ["json"],
-          onerror: () => {
-            throw srvs.errs.ErrValidation.toError();
-          },
-        })
-      );
-    },
-    routes: [
-      {
-        prefix: "/",
-        openapi: loadJsona("api.jsona"),
-        handlers,
-        middlewares: {},
-        securityHandlers: {
-          jwt: (_) =>
-            bearAuth("auth", async (token) => {
-              return jwt.verify(token, srvs.settings.tokenSecret);
-            }),
-        },
-      },
-      {
-        prefix: "/_/",
-        openapi: loadJsona("apiInner.jsona"),
-        handlers: handlersInner,
-        middlewares: {},
-        securityHandlers: {},
-      },
-    ],
+async function main() {
+  let server;
+  process.on("unhandledRejection", (reason) => {
+    const { logger } = srvs;
+    if (logger) srvs.logger.error(reason as any, { unhandledRejection: true });
   });
-});
+  process.on("uncaughtException", (err) => {
+    const { logger } = srvs;
+    if (logger) srvs.logger.error(err, { uncaughtException: true });
+  });
+  let stop;
+  try {
+    stop = await init();
+    const { host, port } = srvs.settings;
+    const app = await createApp();
+    server = stoppable(http.createServer(app.callback()), 7000);
+    server.stop = promisify(server.stop);
+    server.listen(port, host);
+    await pEvent(server, "listening");
+    srvs.logger.debug(`server is listening on: ${host}:${port}`);
 
-function loadJsona(file: string) {
-  file = path.resolve(settings.baseDir, file);
-  const content = fs.readFileSync(file, "utf8");
-  return parse(content);
+    await Promise.race([
+      ...["SIGINT", "SIGHUP", "SIGTERM"].map((s) =>
+        pEvent(
+          process,
+          s
+          // {
+          //   rejectionEvents: ["uncaughtException", "unhandledRejection"],
+          // },
+        )
+      ),
+    ]);
+  } catch (err) {
+    process.exitCode = 1;
+    if (srvs.logger) {
+      srvs.logger.error(err);
+    } else {
+      console.log(err);
+    }
+  } finally {
+    if (server && server.stop) {
+      try {
+        await server.stop();
+      } catch (err) {}
+      if (srvs.logger) srvs.logger.debug("server close");
+    }
+    if (stop) await stop();
+    setTimeout(() => process.exit(), 10000).unref();
+  }
 }
+
+main();
